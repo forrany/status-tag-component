@@ -1,6 +1,6 @@
 {
   "name": "@blueking/status-tag-web-component",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A framework-agnostic Status Tag Web Component with i18n support",
   "main": "dist/status-tag.umd.js",
   "module": "dist/status-tag.mjs",

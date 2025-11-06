@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Status Tag UI Preview](https://raw.githubusercontent.com/forrany/status-tag-component/main/public/loading-color.svg)
+![](https://pic-bed-1302552283.cos.ap-guangzhou.myqcloud.com/undefined20251106111525432.png?imageSlim)
 
 **一个无框架依赖的状态标签 Web Component，支持国际化，适用于任何前端项目**
 
