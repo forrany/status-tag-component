@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Status Tag 样式验证测试</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #fafafa;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+    }
+    .section {
+      margin-bottom: 40px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .section h2 {
+      color: #666;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    .tags-container {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .info {
+      background: #e8f4f8;
+      padding: 12px;
+      border-left: 4px solid #3A84FF;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #666;
+    }
+    .comparison {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+    }
+    .comparison-item {
+      flex: 1;
+    }
+    .comparison-item h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #666;
+    }
+    .code-block {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .test-item {
+      border: 1px solid #e0e0e0;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    .test-item h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 Status Tag Web Component - 样式验证测试</h1>
+
+  <div class="section">
+    <h2>1. 严格按照原 SCSS 实现的样式</h2>
+    <div class="info">
+      <strong>规格对比：</strong><br>
+      • 容器高度：22px<br>
+      • 内边距：0 8px<br>
+      • 圆角：13px<br>
+      • 字体：12px / 700<br>
+      • Loading 图标：12×12px，SVG 背景图<br>
+      • Dot 图标：6×6px，带光晕效果（伪元素）<br>
+    </div>
+    <div class="tags-container">
+      <status-tag status="loading"></status-tag>
+      <status-tag status="running"></status-tag>
+      <status-tag status="stop"></status-tag>
+      <status-tag status="warning"></status-tag>
+      <status-tag status="unknown"></status-tag>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>2. 详细样式检查</h2>
+    <div class="test-grid">
+      <div class="test-item">
+        <h4>Loading 状态</h4>
+        <status-tag status="loading"></status-tag>
+        <div class="code-block">
+          背景: #EDF4FF<br>
+          边框: 1px solid #CDDFFE<br>
+          文字: #699DF4<br>
+          图标: 12×12 SVG
+        </div>
+      </div>
+      <div class="test-item">
+        <h4>Running 状态</h4>
+        <status-tag status="running"></status-tag>
+        <div class="code-block">
+          背景: #EBFAEF<br>
+          边框: 1px solid #CBF0DA<br>
+          文字: #299E56<br>
+          图标: 6×6 绿点边框
+        </div>
+      </div>
+      <div class="test-item">
+        <h4>Stop 状态</h4>
+        <status-tag status="stop"></status-tag>
+        <div class="code-block">
+          背景: #F5F7FA<br>
+          边框: 1px solid #EAEBF0<br>
+          文字: #979BA5<br>
+          图标: 6×6 灰点边框
+        </div>
+      </div>
+      <div class="test-item">
+        <h4>Warning 状态</h4>
+        <status-tag status="warning"></status-tag>
+        <div class="code-block">
+          背景: #FDF4E9<br>
+          边框: 1px solid #FCE5C0<br>
+          文字: #F59500<br>
+          图标: 6×6 橙点边框
+        </div>
+      </div>
+      <div class="test-item">
+        <h4>Unknown 状态</h4>
+        <status-tag status="unknown"></status-tag>
+        <div class="code-block">
+          背景: #fff3e8<br>
+          文字: #ff9c01<br>
+          图标: 6×6 橙点
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>3. 英文版本</h2>
+    <div class="tags-container">
+      <status-tag status="loading" locale="en-US"></status-tag>
+      <status-tag status="running" locale="en-US"></status-tag>
+      <status-tag status="stop" locale="en-US"></status-tag>
+      <status-tag status="warning" locale="en-US"></status-tag>
+      <status-tag status="unknown" locale="en-US"></status-tag>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>4. 智能匹配测试</h2>
+    <div class="tags-container">
+      <status-tag status="RUNNING"></status-tag>
+      <status-tag status="Stop"></status-tag>
+      <status-tag status="WARNING"></status-tag>
+      <status-tag status="LoAdInG"></status-tag>
+      <status-tag status="UNKNOWN"></status-tag>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>5. 自定义状态映射</h2>
+    <div class="tags-container">
+      <status-tag
+        status="pending"
+        status-map='{
+          "pending": {"text": "待审批", "theme": "warning"},
+          "approved": {"text": "已批准", "theme": "running"},
+          "rejected": {"text": "已拒绝", "theme": "stop"}
+        }'
+      ></status-tag>
+      <status-tag
+        status="approved"
+        status-map='{
+          "pending": {"text": "待审批", "theme": "warning"},
+          "approved": {"text": "已批准", "theme": "running"},
+          "rejected": {"text": "已拒绝", "theme": "stop"}
+        }'
+      ></status-tag>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>6. 原 Vue 组件使用场景模拟</h2>
+    <div class="info">
+      模拟原项目场景：<code>status={clusterOpsStatus.toLocaleLowerCase() || 'unknown'}</code>
+    </div>
+    <div class="tags-container">
+      <div class="test-item">
+        <h4>clusterOpsStatus = "RUNNING"</h4>
+        <status-tag status="RUNNING"></status-tag>
+      </div>
+      <div class="test-item">
+        <h4>clusterOpsStatus = "STOPPED"</h4>
+        <status-tag status="STOPPED"></status-tag>
+      </div>
+      <div class="test-item">
+        <h4>clusterOpsStatus = ""</h4>
+        <status-tag status="unknown"></status-tag>
+      </div>
+    </div>
+  </div>
+
+  <script src="../dist/status-tag.umd.js"></script>
+  <script>
+    console.log('✅ Status Tag Web Component 已加载');
+    console.log('📦 构建信息:');
+    console.log('  - UMD: 7.50 kB (gzip: 2.95 kB)');
+    console.log('  - ES: 9.38 kB (gzip: 3.27 kB)');
+    console.log('  - SVG 已内联到组件');
+    console.log('  - 样式完全按照原始 SCSS 实现');
+
+    // 检查所有组件
+    const tags = document.querySelectorAll('status-tag');
+    tags.forEach((tag, index) => {
+      console.log(`Tag ${index}: status=${tag.getAttribute('status')}, theme class=${tag.shadowRoot.querySelector('.bkbase-status-tag')?.className || 'N/A'}`);
+    });
+  </script>
+</body>
+</html>

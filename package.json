@@ -1,0 +1,48 @@
+{
+  "name": "@blueking/status-tag-web-component",
+  "version": "1.0.1",
+  "description": "A framework-agnostic Status Tag Web Component with i18n support",
+  "main": "dist/status-tag.umd.js",
+  "module": "dist/status-tag.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "public"
+  ],
+  "keywords": [
+    "web-component",
+    "status-tag",
+    "i18n",
+    "framework-agnostic",
+    "typescript",
+    "shadow-dom",
+    "custom-elements"
+  ],
+  "author": "Vincent Ko",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/forrany/status-tag-component.git"
+  },
+  "homepage": "https://github.com/forrany/status-tag-component.git",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "sass-embedded": "^1.93.3",
+    "terser": "^5.44.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0"
+  }
+}

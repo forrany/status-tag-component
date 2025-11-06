@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Status Tag UI Preview](https://pic-bed-1302552283.cos.ap-guangzhou.myqcloud.com/undefined20251106111525432.png?imageSlim)
+![Status Tag UI Preview](https://raw.githubusercontent.com/forrany/status-tag-component/main/public/loading-color.svg)
 
 **一个无框架依赖的状态标签 Web Component，支持国际化，适用于任何前端项目**
 
@@ -31,7 +31,7 @@
 ### NPM 安装
 
 ```bash
-npm install status-tag-web-component
+npm install @blueking/status-tag-web-component
 ```
 
 ### CDN 引入（开发测试）
@@ -262,7 +262,7 @@ function StatusList({ items }) {
 
 <script setup>
 import { ref } from 'vue';
-import 'status-tag-web-component';
+import '@blueking/status-tag-web-component';
 
 // 响应式数据
 const status = ref('running');
@@ -564,7 +564,7 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 - [迁移指南](./MIGRATION.md) - 从 Vue 迁移指南
 - [项目总结](./PROJECT_SUMMARY.md) - 项目总结
 - [快速上手](./QUICKSTART.md) - 5 分钟上手指南
-- [完成报告](./COMPLETION_REPORT.md) - 项目完成报告
+- [使用指南](./USAGE.md) - 详细使用说明
 - [examples/final-test-v2.html](./examples/final-test-v2.html) - 完整测试页面
 
 ## ⭐ 致谢
@@ -577,6 +577,6 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 **如果这个项目对您有帮助，请给我们一个 ⭐️！**
 
-本地项目 · [查看文档](#) · [提交 Issue](#)
+[NPM 包](https://www.npmjs.com/package/@blueking/status-tag-web-component) · [GitHub 仓库](https://github.com/forrany/status-tag-component) · [提交 Issue](https://github.com/forrany/status-tag-component/issues)
 
 </div>

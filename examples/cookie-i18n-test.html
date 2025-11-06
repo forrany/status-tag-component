@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cookie I18n Test - Status Tag Component</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #1a1a1a;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    h2 {
+      color: #333;
+      font-size: 18px;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+    .status-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: #f5f7fa;
+      border-radius: 4px;
+    }
+    .status-label {
+      font-size: 12px;
+      color: #63656e;
+      font-weight: 500;
+    }
+    button {
+      background: #3a84ff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 8px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #2761da;
+    }
+    .info-box {
+      background: #f0f8ff;
+      border-left: 4px solid #3a84ff;
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 4px;
+    }
+    .info-box p {
+      margin: 4px 0;
+      color: #63656e;
+      font-size: 14px;
+    }
+    code {
+      background: #f0f1f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 13px;
+      color: #d23f31;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌐 Status Tag Component - Cookie I18n Test</h1>
+
+    <div class="info-box">
+      <p><strong>测试说明：</strong></p>
+      <p>• 当 cookie <code>blueking_language=en</code> 时，组件显示英文</p>
+      <p>• 当 cookie <code>blueking_language</code> 为其他值或不存在时，组件显示中文</p>
+      <p>• 如果手动设置 <code>locale</code> 属性，会覆盖 cookie 的设置</p>
+    </div>
+
+    <h2>1. 当前 Cookie 状态</h2>
+    <div id="cookie-info"></div>
+
+    <h2>2. 不设置 locale 属性（自动从 Cookie 获取）</h2>
+    <div class="status-row">
+      <div class="status-item">
+        <span class="status-label">loading:</span>
+        <status-tag status="loading"></status-tag>
+      </div>
+      <div class="status-item">
+        <span class="status-label">running:</span>
+        <status-tag status="running"></status-tag>
+      </div>
+      <div class="status-item">
+        <span class="status-label">stop:</span>
+        <status-tag status="stop"></status-tag>
+      </div>
+      <div class="status-item">
+        <span class="status-label">warning:</span>
+        <status-tag status="warning"></status-tag>
+      </div>
+      <div class="status-item">
+        <span class="status-label">unknown:</span>
+        <status-tag status="unknown"></status-tag>
+      </div>
+    </div>
+
+    <h2>3. 手动设置 locale 属性（覆盖 Cookie）</h2>
+    <div class="info-box">
+      <p>下面的标签手动设置了 <code>locale="en-US"</code> 或 <code>locale="zh-CN"</code>，不受 Cookie 影响</p>
+    </div>
+    <div class="status-row">
+      <div class="status-item">
+        <span class="status-label">Chinese:</span>
+        <status-tag status="loading" locale="zh-CN"></status-tag>
+      </div>
+      <div class="status-item">
+        <span class="status-label">English:</span>
+        <status-tag status="running" locale="en-US"></status-tag>
+      </div>
+    </div>
+
+    <h2>4. 切换 Cookie 测试</h2>
+    <div class="info-box">
+      <p>点击下面的按钮来设置/切换 Cookie，然后刷新页面查看效果</p>
+    </div>
+    <button onclick="setCookie('zh-cn')">设置为中文 (zh-cn)</button>
+    <button onclick="setCookie('en')">设置为英文 (en)</button>
+    <button onclick="deleteCookie()">删除 Cookie</button>
+    <button onclick="location.reload()">刷新页面</button>
+  </div>
+
+  <script src="../dist/status-tag.umd.js"></script>
+  <script>
+    // 显示当前 Cookie 状态
+    function showCookieStatus() {
+      const cookies = document.cookie.split(';');
+      let blueking_language = null;
+      for (const cookie of cookies) {
+        const [name, ...valueParts] = cookie.trim().split('=');
+        if (name === 'blueking_language') {
+          blueking_language = valueParts.join('=');
+          break;
+        }
+      }
+
+      const cookieInfo = document.getElementById('cookie-info');
+      if (blueking_language) {
+        const lang = blueking_language === 'en' ? '英文 (en-US)' : '中文 (zh-CN)';
+        cookieInfo.innerHTML = `
+          <div style="padding: 12px; background: #e8f5e9; border-radius: 4px; color: #2e7d32;">
+            <strong>✓ Cookie 已设置：</strong><br>
+            <code>blueking_language=${blueking_language}</code><br>
+            <span style="margin-left: 20px;">→ 组件将显示：<strong>${lang}</strong></span>
+          </div>
+        `;
+      } else {
+        cookieInfo.innerHTML = `
+          <div style="padding: 12px; background: #fff3e0; border-radius: 4px; color: #e65100;">
+            <strong>⚠ Cookie 未设置</strong><br>
+            → 组件将显示默认语言：<strong>中文 (zh-CN)</strong>
+          </div>
+        `;
+      }
+    }
+
+    // 设置 Cookie
+    function setCookie(value) {
+      // 设置过期时间为 1 天
+      const expires = new Date();
+      expires.setTime(expires.getTime() + 24 * 60 * 60 * 1000);
+      document.cookie = `blueking_language=${value}; expires=${expires.toUTCString()}; path=/`;
+      showCookieStatus();
+    }
+
+    // 删除 Cookie
+    function deleteCookie() {
+      document.cookie = 'blueking_language=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      showCookieStatus();
+    }
+
+    // 初始化显示
+    showCookieStatus();
+  </script>
+</body>
+</html>

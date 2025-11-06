@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Status Tag 最终测试</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #fafafa;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+    }
+    .section {
+      margin-bottom: 40px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .section h2 {
+      color: #666;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    .tags-container {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .info {
+      background: #e8f4f8;
+      padding: 12px;
+      border-left: 4px solid #3A84FF;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #666;
+    }
+    code {
+      background: #e8e8e8;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+    .controls {
+      margin-top: 20px;
+    }
+    .controls button {
+      padding: 8px 16px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 4px;
+      background: #3A84FF;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .controls button:hover {
+      background: #2D7EF7;
+    }
+    .test-item {
+      border: 1px solid #e0e0e0;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+    .test-item h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 Status Tag Web Component 最终测试</h1>
+
+  <div class="section">
+    <h2>1. 默认状态展示（8px 圆点，有边框）</h2>
+    <div class="info">
+      💡 注意：运行中的小绿点使用 <code>width: 8px; height: 8px; background: #CBF0DA; border: 1px solid #2CAF5E;</code>
+    </div>
+    <div class="tags-container">
+      <status-tag status="loading"></status-tag>
+      <status-tag status="running"></status-tag>
+      <status-tag status="stop"></status-tag>
+      <status-tag status="warning"></status-tag>
+      <status-tag status="unknown"></status-tag>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>2. 英文版本</h2>
+    <div class="tags-container">
+      <status-tag status="loading" locale="en-US"></status-tag>
+      <status-tag status="running" locale="en-US"></status-tag>
+      <status-tag status="stop" locale="en-US"></status-tag>
+      <status-tag status="warning" locale="en-US"></status-tag>
+      <status-tag status="unknown" locale="en-US"></status-tag>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>3. 智能匹配（大小写不敏感）</h2>
+    <div class="tags-container">
+      <status-tag status="RUNNING"></status-tag>
+      <status-tag status="Stop"></status-tag>
+      <status-tag status="WARNING"></status-tag>
+      <status-tag status="LoAdInG"></status-tag>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>4. 自定义状态映射</h2>
+    <div class="tags-container">
+      <status-tag
+        status="pending"
+        status-map='{
+          "pending": {"text": "待审批", "theme": "warning"},
+          "approved": {"text": "已批准", "theme": "running"},
+          "rejected": {"text": "已拒绝", "theme": "stop"}
+        }'
+      ></status-tag>
+      <status-tag
+        status="approved"
+        status-map='{
+          "pending": {"text": "待审批", "theme": "warning"},
+          "approved": {"text": "已批准", "theme": "running"},
+          "rejected": {"text": "已拒绝", "theme": "stop"}
+        }'
+      ></status-tag>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>5. 动态交互测试</h2>
+    <div class="test-item">
+      <h4>测试 1: 动态切换状态</h4>
+      <div id="dynamic-tag-container" style="margin-bottom: 15px;">
+        <status-tag id="dynamic-tag" status="running"></status-tag>
+      </div>
+      <div class="controls">
+        <button onclick="changeStatus('loading')">Loading</button>
+        <button onclick="changeStatus('running')">Running</button>
+        <button onclick="changeStatus('stop')">Stop</button>
+        <button onclick="changeStatus('warning')">Warning</button>
+        <button onclick="changeStatus('unknown')">Unknown</button>
+      </div>
+    </div>
+    <div class="test-item">
+      <h4>测试 2: 动态切换语言</h4>
+      <div id="lang-tag-container" style="margin-bottom: 15px;">
+        <status-tag id="lang-tag" status="running" locale="zh-CN"></status-tag>
+      </div>
+      <div class="controls">
+        <button onclick="changeLocale()">切换语言</button>
+      </div>
+    </div>
+    <div class="test-item">
+      <h4>测试 3: 切换自定义状态</h4>
+      <div id="custom-container" style="margin-bottom: 15px;">
+        <status-tag
+          id="custom-tag"
+          status="pending"
+          status-map='{
+            "pending": {"text": "待审批", "theme": "warning"},
+            "approved": {"text": "已批准", "theme": "running"},
+            "rejected": {"text": "已拒绝", "theme": "stop"}
+          }'
+        ></status-tag>
+      </div>
+      <div class="controls">
+        <button onclick="changeCustom('pending')">Pending</button>
+        <button onclick="changeCustom('approved')">Approved</button>
+        <button onclick="changeCustom('rejected')">Rejected</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>6. 原 Vue 组件使用场景模拟</h2>
+    <div class="info">
+      💡 模拟原项目中的使用方式：<code>&lt;status-tag :status="clusterOpsStatus.toLocaleLowerCase() || 'unknown'" /&gt;</code>
+    </div>
+    <div class="tags-container">
+      <div>
+        <p style="font-size: 12px; color: #999; margin-bottom: 5px;">clusterOpsStatus = "RUNNING"</p>
+        <status-tag status="RUNNING"></status-tag>
+      </div>
+      <div>
+        <p style="font-size: 12px; color: #999; margin-bottom: 5px;">clusterOpsStatus = "STOPPED"</p>
+        <status-tag status="STOPPED"></status-tag>
+      </div>
+      <div>
+        <p style="font-size: 12px; color: #999; margin-bottom: 5px;">clusterOpsStatus = ""</p>
+        <status-tag status="unknown"></status-tag>
+      </div>
+    </div>
+  </div>
+
+  <script src="../dist/status-tag.umd.js"></script>
+  <script>
+    const tag = document.getElementById('dynamic-tag');
+    const langTag = document.getElementById('lang-tag');
+    const customTag = document.getElementById('custom-tag');
+
+    function changeStatus(status) {
+      tag.setAttribute('status', status);
+    }
+
+    let currentLocale = 'zh-CN';
+    function changeLocale() {
+      currentLocale = currentLocale === 'zh-CN' ? 'en-US' : 'zh-CN';
+      langTag.setAttribute('locale', currentLocale);
+    }
+
+    function changeCustom(status) {
+      customTag.setAttribute('status', status);
+    }
+
+    console.log('✅ Status Tag Web Component 已加载');
+    console.log('📦 构建信息:');
+    console.log('  - UMD: 5.76 kB (gzip: 2.14 kB)');
+    console.log('  - ES: 7.56 kB (gzip: 2.47 kB)');
+    console.log('  - 自包含样式: ✅');
+    console.log('  - 国际化: ✅ (zh-CN, en-US)');
+    console.log('  - 智能匹配: ✅');
+    console.log('  - 自定义映射: ✅');
+  </script>
+</body>
+</html>

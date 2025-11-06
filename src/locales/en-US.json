@@ -1,0 +1,9 @@
+{
+  "status": {
+    "loading": "Loading",
+    "running": "Running",
+    "stop": "Stopped",
+    "warning": "Warning",
+    "unknown": "Unknown"
+  }
+}

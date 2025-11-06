@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module Format Test: .mjs vs .es.js</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    h1 { color: #1a1a1a; }
+    h2 { color: #333; margin-top: 30px; }
+    .test-box {
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 20px;
+      margin: 15px 0;
+      background: #fafafa;
+    }
+    .success {
+      border-color: #4caf50;
+      background: #e8f5e9;
+    }
+    .error {
+      border-color: #f44336;
+      background: #ffebee;
+    }
+    pre {
+      background: #263238;
+      color: #aed581;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 8px;
+    }
+    .badge-success {
+      background: #4caf50;
+      color: white;
+    }
+    .badge-error {
+      background: #f44336;
+      color: white;
+    }
+    .badge-info {
+      background: #2196f3;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📚 Module Format Test: .mjs vs .es.js</h1>
+    <p>This page demonstrates the difference between .mjs and .es.js extensions for ES Modules.</p>
+
+    <div class="test-box" id="test-mjs">
+      <span class="badge badge-info">TEST 1</span>
+      <strong>Loading .mjs file (ES Module):</strong>
+      <div id="result-mjs"></div>
+    </div>
+
+    <div class="test-box" id="test-umd">
+      <span class="badge badge-info">TEST 2</span>
+      <strong>Loading .umd.js file:</strong>
+      <div id="result-umd"></div>
+    </div>
+
+    <h2>Key Differences</h2>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+      <tr style="background: #f5f5f5;">
+        <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Aspect</th>
+        <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">.mjs</th>
+        <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">.es.js</th>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #ddd;"><strong>Official Status</strong></td>
+        <td style="padding: 12px; border: 1px solid #ddd;">✅ TC39 Recommended</td>
+        <td style="padding: 12px; border: 1px solid #ddd;">⚠️ Community Convention</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #ddd;"><strong>Node.js Support</strong></td>
+        <td style="padding: 12px; border: 1px solid #ddd;">✅ Native (no config needed)</td>
+        <td style="padding: 12px; border: 1px solid #ddd;">⚠️ Needs package.json config</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #ddd;"><strong>Browser Support</strong></td>
+        <td style="padding: 12px; border: 1px solid #ddd;">✅ Modern browsers support</td>
+        <td style="padding: 12px; border: 1px solid #ddd;">⚠️ May need MIME type config</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #ddd;"><strong>Build Tools</strong></td>
+        <td style="padding: 12px; border: 1px solid #ddd;">✅ Vite/Webpack/Rollup native</td>
+        <td style="padding: 12px; border: 1px solid #ddd;">⚠️ Compatible but not preferred</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #ddd;"><strong>Clarity</strong></td>
+        <td style="padding: 12px; border: 1px solid #ddd;">✅ Immediately obvious it's ESM</td>
+        <td style="padding: 12px; border: 1px solid #ddd;">⚠️ Ambiguous without context</td>
+      </tr>
+    </table>
+
+    <h2>Test Results</h2>
+    <div id="results"></div>
+
+    <h2>Why .mjs is Preferred?</h2>
+    <ol>
+      <li><strong>Explicit:</strong> File extension clearly indicates it's an ES Module</li>
+      <li><strong>No Config Needed:</strong> Works in Node.js without package.json modifications</li>
+      <li><strong>Tool Friendly:</strong> All modern build tools support it natively</li>
+      <li><strong>Future Proof:</strong> Aligns with official TC39 recommendations</li>
+      <li><strong>Better DX:</strong> Developers immediately understand the module system</li>
+    </ol>
+  </div>
+
+  <script type="module">
+    const resultsDiv = document.getElementById('results');
+
+    async function runTests() {
+      // Test 1: .mjs (our actual build output)
+      try {
+        console.log('Loading .mjs file...');
+        const mjsModule = await import('./dist/status-tag.mjs');
+        console.log('✅ .mjs loaded successfully:', mjsModule);
+
+        const mjsResult = document.getElementById('result-mjs');
+        mjsResult.innerHTML = `
+          <span class="badge badge-success">SUCCESS</span>
+          <p>Loaded .mjs file successfully!</p>
+          <pre><code>// ES Module import syntax
+import { StatusTag } from './dist/status-tag.mjs';
+
+// Component auto-registers when imported
+console.log(StatusTag); // ✅ Defined</code></pre>
+        `;
+        mjsResult.parentElement.classList.add('success');
+
+        resultsDiv.innerHTML += `
+          <div class="test-box success">
+            <span class="badge badge-success">✅ TEST 1 PASSED</span>
+            <strong>.mjs file loaded successfully</strong>
+            <p>The .mjs extension works natively with modern browsers and build tools.</p>
+          </div>
+        `;
+      } catch (error) {
+        console.error('❌ .mjs load failed:', error);
+        document.getElementById('result-mjs').innerHTML = `
+          <span class="badge badge-error">ERROR</span>
+          <p>Failed to load .mjs: ${error.message}</p>
+        `;
+        document.getElementById('test-mjs').classList.add('error');
+      }
+
+      // Test 2: UMD (works with traditional script tags)
+      try {
+        console.log('Loading .umd.js file...');
+        const script = document.createElement('script');
+        script.src = './dist/status-tag.umd.js';
+        script.onload = () => {
+          console.log('✅ UMD loaded via script tag');
+          const umdResult = document.getElementById('result-umd');
+          umdResult.innerHTML = `
+            <span class="badge badge-success">SUCCESS</span>
+            <p>UMD loaded successfully!</p>
+            <pre><code>// Traditional script tag (UMD works everywhere)
+&lt;script src="dist/status-tag.umd.js"&gt;&lt;/script&gt;
+&lt;status-tag status="running"&gt;&lt;/status-tag&gt;
+
+// Component available as window.StatusTag
+console.log(window.StatusTag); // ✅ Defined</code></pre>
+          `;
+          umdResult.parentElement.classList.add('success');
+
+          resultsDiv.innerHTML += `
+            <div class="test-box success">
+              <span class="badge badge-success">✅ TEST 2 PASSED</span>
+              <strong>UMD file loaded successfully</strong>
+              <p>UMD works with traditional script tags and has maximum compatibility.</p>
+            </div>
+          `;
+        };
+        document.head.appendChild(script);
+      } catch (error) {
+        console.error('❌ UMD load failed:', error);
+        document.getElementById('result-umd').innerHTML = `
+          <span class="badge badge-error">ERROR</span>
+          <p>Failed to load UMD: ${error.message}</p>
+        `;
+        document.getElementById('test-umd').classList.add('error');
+      }
+    }
+
+    runTests();
+  </script>
+</body>
+</html>
