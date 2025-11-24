@@ -1,18 +1,17 @@
 {
   "name": "@blueking/status-tag",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A framework-agnostic Status Tag Web Component with i18n support",
   "type": "module",
-  "main": "./dist/status-tag.umd.js",
-  "module": "./dist/status-tag.mjs",
+  "main": "./dist/status-tag.umd.cjs",
+  "module": "./dist/status-tag.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/status-tag.mjs",
-      "require": "./dist/status-tag.umd.js",
+      "import": "./dist/status-tag.js",
+      "require": "./dist/status-tag.umd.cjs",
       "types": "./dist/index.d.ts"
-    },
-    "./styles": "./dist/style.css"
+    }
   },
   "files": [
     "dist",
@@ -45,7 +44,7 @@
   },
   "scripts": {
     "dev": "vite build --watch",
-    "build": "tsc && vite build",
+    "build": "vite build && tsc --emitDeclarationOnly --noEmit false",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "type-check": "tsc --noEmit"
