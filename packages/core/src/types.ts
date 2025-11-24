@@ -148,6 +148,8 @@ export interface StatusTagProps {
   locale?: 'zh-CN' | 'en-US';
   /** 自定义状态映射的 JSON 字符串 */
   'status-map'?: string;
+  /** 标签类型 */
+  type?: 'stroke' | 'filled' | '';
 }
 
 /**
