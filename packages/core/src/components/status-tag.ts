@@ -230,10 +230,16 @@ export class StatusTag extends LitElement {
     const matchedKey = this._findMatchingStatusKey(this.status);
     const statusConfig = this._mergedStatusMap[matchedKey] || this._mergedStatusMap['unknown'];
 
-    // 通过 i18n 工具翻译状态文本
+    // 尝试翻译：构建 status.xxx 的键
+    const translationKey = `status.${statusConfig.text}`;
+    const translated = i18n.t(translationKey);
+
+    // 如果翻译结果等于键名（说明没找到翻译），则直接使用原始文本
+    const text = translated === translationKey ? statusConfig.text : translated;
+
     return {
       ...statusConfig,
-      text: i18n.t(`status.${statusConfig.text}`)
+      text
     };
   }
 
