@@ -55,13 +55,13 @@ src/
 
 ### Component Architecture
 
-**StatusTag Class** (`src/components/status-tag.ts:270`):
+**StatusTag Class** (`src/components/status-tag.ts:114`):
 - Extends `HTMLElement`
-- Uses Shadow DOM for style encapsulation
+- Uses Shadow DOM for style encapsulation (`attachShadow({ mode: 'open' })`)
 - Implements Custom Elements lifecycle:
   - `constructor()` - Initialize shadow root
-  - `connectedCallback()` - Render on mount
-  - `attributeChangedCallback()` - React to attribute changes
+  - `connectedCallback()` - Detect locale from cookie if not set, then render
+  - `attributeChangedCallback()` - React to attribute changes and re-render
 
 **Key Features**:
 - **Observed attributes**: `status`, `status-map`, `locale`
@@ -84,6 +84,7 @@ src/
 **Internationalization** (`src/utils/i18n.ts`):
 - Custom I18n class with locale switching and nested translation key support
 - Built-in language packs (zh-CN, en-US)
+- `getLanguageFromCookie()` - Reads `blueking_language` cookie and maps 'en' → 'en-US', defaults to 'zh-CN'
 - Extensible architecture for additional languages
 
 ### Type System (`src/types.ts`)
@@ -192,9 +193,13 @@ const status = ref('running');
 No formal testing framework is configured. Testing is done through manual HTML test pages:
 - `examples/basic.html` - Basic usage demo
 - `examples/final-test.html` - Complete test page
-- `examples/final-test-v2.html` - Updated test page
+- `examples/final-test-v2.html` - Updated test page with all status variations
 
-Test changes by opening these files in a browser or serving them via `npm run dev`.
+**Testing workflow**:
+1. Run `npm run dev` to start Vite dev server on port 5173
+2. Navigate to `http://localhost:5173/examples/[test-file].html` in browser
+3. Check console for any errors
+4. Verify visual appearance against design specs
 
 ## 📚 Documentation
 
@@ -208,14 +213,15 @@ Chrome ≥ 54, Firefox ≥ 63, Safari ≥ 10.1, Edge ≥ 79, iOS Safari ≥ 10.3
 
 ## 🔍 Key Implementation Details
 
-1. **Auto-registration** (`src/index.ts`): Component automatically registers with Custom Elements when imported
-2. **Shadow DOM**: All styles are scoped within the component's shadow root
+1. **Auto-registration** (`src/index.ts`): Component automatically registers with Custom Elements API as `<status-tag>` when imported
+2. **Shadow DOM**: All styles are scoped within the component's shadow root - styles and SVG icons are embedded as strings
 3. **Attribute reflection**: Properties sync with attributes (status, locale, statusMap)
-4. **Smart matching**: Status values are normalized to lowercase for matching (e.g., "RUNNING" → "running")
-5. **Cookie-based i18n**: If `locale` attribute is not set, component reads `blueking_language` cookie:
+4. **Smart matching** (`findMatchingStatusKey()`): Tries exact match → lowercase → uppercase → falls back to 'unknown'
+5. **Cookie-based i18n**: Checked in `connectedCallback()` only if `locale` attribute is not provided:
    - `blueking_language=en` → English (en-US)
    - Any other value or not set → Chinese (zh-CN, default)
-6. **I18n resolution**: Text is resolved from locale resources with fallback support
+6. **I18n resolution**: Status text keys (e.g., 'running') are translated via `i18n.t('status.running')` using nested key lookup
+7. **Custom status map merging**: Custom status maps merge with DEFAULT_STATUS_MAP, allowing partial overrides
 
 ## 💡 Important Notes
 
@@ -224,3 +230,5 @@ Chrome ≥ 54, Firefox ≥ 63, Safari ≥ 10.1, Edge ≥ 79, iOS Safari ≥ 10.3
 - Shadow DOM isolation means external styles cannot target internal elements (use `::part` if exposed or manipulate shadowRoot directly)
 - No testing framework - rely on manual browser testing via examples/ directory
 - All assets (icons, styles) are embedded for zero external dependencies
+- Package name: `@blueking/status-tag-web-component` (published to npm)
+- Terser minification removes console logs and debuggers in production builds

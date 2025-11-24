@@ -1,0 +1,6 @@
+# pnpm workspace 配置
+# 定义 monorepo 中的所有包
+
+packages:
+  # 所有 packages 目录下的子目录都是独立的包
+  - 'packages/*'

@@ -1,0 +1,297 @@
+/**
+ * 状态标签组件样式
+ * 使用 SCSS 编写，支持嵌套、变量、混合等特性
+ */
+
+// 使用新的 SCSS 模块系统
+@use 'sass:map';
+
+// ========== 设计令牌 / Design Tokens ==========
+
+// 尺寸变量
+$tag-height: 22px;
+$tag-padding: 0 8px;
+$tag-border-radius: 13px;
+$tag-font-size: 12px;
+$tag-font-weight: 700;
+
+// 图标尺寸
+$icon-size: 12px;
+$dot-size: 6px;
+$icon-margin: 4px;
+
+// 动画时长
+$loading-duration: 1s;
+
+// 主题颜色配置
+$themes: (
+  'loading': (
+    bg: #EDF4FF,
+    border: #CDDFFE,
+    color: #699DF4,
+  ),
+  'running': (
+    bg: #EBFAEF,
+    border: #CBF0DA,
+    color: #299E56,
+    dot-bg: #E5F6EA,
+    dot-border: #3FC06D,
+  ),
+  'stop': (
+    bg: #F5F7FA,
+    border: #EAEBF0,
+    color: #979BA5,
+    dot-bg: #F0F1F5,
+    dot-border: #C4C6CC,
+  ),
+  'warning': (
+    bg: #FDF4E9,
+    border: #FCE5C0,
+    color: #F59500,
+    dot-bg: #FCE5C0,
+    dot-border: #F59500,
+  ),
+  'unknown': ( // This is the Red/Error theme
+    bg: #FEEBEA,
+    border: #FDD8D6,
+    color: #EA3636,
+    dot-bg: #FDD8D6,
+    dot-border: #EA3636,
+  ),
+);
+
+// ========== 混合 / Mixins ==========
+
+/**
+ * 生成主题样式的混合
+ * @param {String} $theme - 主题名称
+ */
+@mixin theme-variant($theme) {
+  $config: map.get($themes, $theme);
+
+  background-color: map.get($config, 'bg');
+  color: map.get($config, 'color');
+
+  @if map.has-key($config, 'border') {
+    $border-color: map.get($config, 'border');
+    @if $border-color != transparent {
+      border: 1px solid $border-color;
+    }
+  }
+
+  // 圆点样式
+  @if map.has-key($config, 'dot-bg') {
+    .bkbase-status-tag-dot {
+      background: map.get($config, 'dot-bg');
+
+      @if map.has-key($config, 'dot-border') {
+        border: 1px solid map.get($config, 'dot-border');
+      }
+    }
+  }
+}
+
+// ========== 宿主元素 ==========
+
+:host {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+// ========== 标签容器 ==========
+
+.bkbase-status-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: $tag-padding;
+  height: $tag-height;
+  border-radius: $tag-border-radius;
+  font-size: $tag-font-size;
+  font-weight: $tag-font-weight;
+  background-color: #f0f1f5;
+  box-sizing: border-box;
+}
+
+// ========== 图标样式 ==========
+
+/**
+ * 加载图标
+ * 使用 CSS 变量接收 SVG Data URI
+ */
+.bkbase-status-tag-loading {
+  display: inline-block;
+  width: $icon-size;
+  height: $icon-size;
+  margin-right: $icon-margin;
+  background-image: var(--loading-icon);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  animation: bk-status-loading-rotate $loading-duration linear infinite;
+}
+
+/**
+ * 状态圆点
+ * 带发光效果的圆形指示器
+ */
+.bkbase-status-tag-dot {
+  display: inline-block;
+  width: $dot-size;
+  height: $dot-size;
+  border-radius: 50%;
+  margin-right: $icon-margin;
+  background-color: #c4c6cc;
+  position: relative;
+
+  // 发光效果（使用伪元素）
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: inherit;
+    opacity: 0.2;
+  }
+}
+
+// ========== 主题变体 ==========
+
+.bkbase-status-tag--loading {
+  @include theme-variant('loading');
+}
+
+.bkbase-status-tag--running {
+  @include theme-variant('running');
+}
+
+.bkbase-status-tag--stop {
+  @include theme-variant('stop');
+}
+
+.bkbase-status-tag--warning {
+  @include theme-variant('warning');
+}
+
+.bkbase-status-tag--unknown {
+  @include theme-variant('unknown');
+}
+
+// ========== 动画 ==========
+
+/**
+ * 加载图标旋转动画
+ */
+@keyframes bk-status-loading-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ========== 类型变体 / Types ==========
+
+// 通用类型样式：移除背景框
+.bkbase-status-tag--type-stroke,
+.bkbase-status-tag--type-filled {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  // 统一文字颜色
+  color: #4D4F56;
+  // 统一字体粗细
+  font-weight: 400;
+  
+  // 调整文字间距
+  span:last-child {
+    margin-left: 4px;
+  }
+}
+
+// Type: Stroke (8px Ring)
+.bkbase-status-tag--type-stroke {
+  .bkbase-status-tag-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    // 移除原有发光伪元素
+    &::before { display: none; }
+  }
+
+  // Running Theme Specifics
+  &.bkbase-status-tag--running .bkbase-status-tag-dot {
+    background: #CBF0DA;
+    border: 1px solid #2CAF5E;
+  }
+}
+
+// Type: Filled (Halo Effect)
+// Outer: 13px Halo
+// Inner: 7px Solid Dot
+.bkbase-status-tag--type-filled {
+  .bkbase-status-tag-dot {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    position: relative;
+    
+    // 移除原有发光伪元素
+    &::before { display: none; }
+    
+    // Inner Dot
+    &::after {
+      content: '';
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  // Running Theme Specifics
+  &.bkbase-status-tag--running .bkbase-status-tag-dot {
+    background: #DAF6E5; // Outer Halo
+    border: none;
+    
+    &::after {
+      background: #3FC06D; // Inner Dot
+    }
+  }
+
+  // Stop Theme Specifics
+  &.bkbase-status-tag--stop .bkbase-status-tag-dot {
+    background: #979ba529; // Outer Halo
+    border: none;
+
+    &::after {
+      background: #979BA5; // Inner Dot
+    }
+  }
+
+  // Warning Theme Specifics
+  &.bkbase-status-tag--warning .bkbase-status-tag-dot {
+    background: #FDEED8; // Outer Halo
+    border: none;
+
+    &::after {
+      background: #F59500; // Inner Dot
+    }
+  }
+
+  // Unknown/Abnormal Theme Specifics (Using Red)
+  &.bkbase-status-tag--unknown .bkbase-status-tag-dot {
+    background: #ea363629; // Outer Halo
+    border: none;
+
+    &::after {
+      background: #EA3636; // Inner Dot
+    }
+  }
+}

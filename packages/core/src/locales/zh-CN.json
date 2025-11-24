@@ -4,6 +4,7 @@
     "running": "运行中",
     "stop": "已停止",
     "warning": "警告",
-    "unknown": "未知"
+    "unknown": "未知",
+    "failed": "失败"
   }
 }

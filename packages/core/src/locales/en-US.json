@@ -4,6 +4,7 @@
     "running": "Running",
     "stop": "Stopped",
     "warning": "Warning",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "failed": "Failed"
   }
 }
