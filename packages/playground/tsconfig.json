@@ -6,6 +6,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
+    "noEmit": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -19,6 +20,5 @@
       "@blueking/status-tag": ["../core/src/index.ts"]
     }
   },
-  "include": ["src"],
-  "references": [{ "path": "../core" }]
+  "include": ["src"]
 }
