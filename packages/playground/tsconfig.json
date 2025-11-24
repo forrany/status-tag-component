@@ -20,5 +20,5 @@
       "@blueking/status-tag": ["../core/src/index.ts"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "src/vite-env.d.ts"]
 }
