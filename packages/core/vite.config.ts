@@ -31,9 +31,11 @@ export default defineConfig(({ command, mode }) => {
           formats: ['umd', 'es']
         },
         rollupOptions: {
-          external: [],
+          external: ['tippy.js'],
           output: {
-            globals: {}
+            globals: {
+              'tippy.js': 'tippy'
+            }
           }
         },
         minify: 'terser',

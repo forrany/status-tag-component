@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { cache } from 'lit/directives/cache.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { i18n, getLanguageFromCookie } from '../utils/i18n';
-import type { StatusConfig, StatusMapConfig, StatusTheme } from '../types';
+import type { StatusConfig, StatusMapConfig, StatusTheme, TippyFunction, TippyInstance } from '../types';
 
 // 导入外部 SCSS 样式文件
 import styles from './status-tag.scss?inline';
@@ -17,8 +17,9 @@ const DEFAULT_STATUS_MAP: Readonly<StatusMapConfig> = {
   running: { text: 'running', theme: 'running' },
   stop: { text: 'stop', theme: 'stop' },
   warning: { text: 'warning', theme: 'warning' },
+  danger: { text: 'danger', theme: 'danger' },
   unknown: { text: 'unknown', theme: 'stop' },
-  failed: { text: 'failed', theme: 'unknown' } // Using 'unknown' theme which is Red
+  failed: { text: 'failed', theme: 'unknown' },
 } as const;
 
 /**
@@ -119,6 +120,39 @@ export class StatusTag extends LitElement {
   @property({ type: String, reflect: true })
   locale: string = 'zh-CN';
 
+  /**
+   * 提示文本
+   * 设置后 hover 时会以 tooltip 形式展示
+   * 优先使用 tippy.js（需用户自行安装），不可用时降级为原生 title
+   */
+  @property({ type: String })
+  tip: string = '';
+
+  /**
+   * tippy.js 配置选项
+   * 支持通过 JSON 字符串传入，会透传给 tippy.js 实例
+   * @see https://atomiks.github.io/tippyjs/v6/all-props/
+   */
+  @property({
+    type: Object,
+    attribute: 'tippy-options',
+    converter: {
+      fromAttribute: (value: string | null): Record<string, unknown> => {
+        if (!value) return {};
+        try {
+          return JSON.parse(value) as Record<string, unknown>;
+        } catch (error) {
+          console.warn('[StatusTag] 解析 tippy-options 失败:', error);
+          return {};
+        }
+      },
+      toAttribute: (value: Record<string, unknown>): string => {
+        return JSON.stringify(value);
+      }
+    }
+  })
+  tippyOptions: Record<string, unknown> = {};
+
   // ========== 内部状态 ==========
 
   /**
@@ -128,6 +162,18 @@ export class StatusTag extends LitElement {
    */
   @state()
   private _mergedStatusMap: StatusMapConfig = DEFAULT_STATUS_MAP;
+
+  /** tippy.js 实例 */
+  private _tippyInstance: TippyInstance | null = null;
+
+  /**
+   * 类级别缓存的 tippy 函数引用
+   * - undefined: 尚未尝试解析
+   * - null: 解析失败（tippy.js 不可用）
+   * - TippyFunction: 解析成功
+   */
+  private static _tippyFn: TippyFunction | null | undefined = undefined;
+  private static _tippyResolving: Promise<TippyFunction | null> | null = null;
 
   // ========== 生命周期方法 ==========
 
@@ -162,6 +208,103 @@ export class StatusTag extends LitElement {
     // 当 statusMap 变化时，重新计算合并后的配置
     if (changedProperties.has('statusMap')) {
       this._mergedStatusMap = this._computeMergedStatusMap();
+    }
+  }
+
+  /**
+   * 属性更新后的回调
+   * 处理 tippy.js tooltip 的初始化和更新
+   */
+  updated(changedProperties: PropertyValues<this>): void {
+    if (changedProperties.has('tip') || changedProperties.has('tippyOptions')) {
+      this._setupTippy();
+    }
+  }
+
+  /**
+   * 组件从 DOM 移除时的回调
+   * 清理 tippy.js 实例以避免内存泄漏
+   */
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._destroyTippy();
+  }
+
+  // ========== Tippy.js 集成 ==========
+
+  /**
+   * 解析 tippy.js 函数引用
+   *
+   * 解析策略（按优先级）：
+   * 1. 检查 window.tippy（CDN / UMD 全局引入）
+   * 2. 动态 import('tippy.js')（ES Module / 打包工具）
+   * 3. 均不可用时返回 null，组件降级为原生 title
+   *
+   * 使用类级别缓存避免重复 import，同时每次优先检查全局变量
+   * 以兼容 CDN 延迟加载场景
+   */
+  private async _resolveTippy(): Promise<TippyFunction | null> {
+    if (typeof window !== 'undefined' && 'tippy' in window) {
+      return (window as unknown as Record<string, TippyFunction>).tippy;
+    }
+
+    if (StatusTag._tippyFn !== undefined) {
+      return StatusTag._tippyFn;
+    }
+
+    if (StatusTag._tippyResolving) {
+      return StatusTag._tippyResolving;
+    }
+
+    StatusTag._tippyResolving = (async (): Promise<TippyFunction | null> => {
+      try {
+        const mod: Record<string, unknown> = await import('tippy.js');
+        const fn = (mod.default ?? mod) as TippyFunction;
+        StatusTag._tippyFn = fn;
+        return fn;
+      } catch {
+        StatusTag._tippyFn = null;
+        return null;
+      } finally {
+        StatusTag._tippyResolving = null;
+      }
+    })();
+
+    return StatusTag._tippyResolving;
+  }
+
+  /**
+   * 初始化或更新 tippy tooltip
+   * 无 tip 时清理实例；tippy.js 不可用时降级为原生 title
+   */
+  private async _setupTippy(): Promise<void> {
+    this._destroyTippy();
+
+    if (!this.tip) {
+      this.removeAttribute('title');
+      return;
+    }
+
+    const tippyFn = await this._resolveTippy();
+    if (!tippyFn) {
+      this.title = this.tip;
+      return;
+    }
+
+    this.removeAttribute('title');
+    this._tippyInstance = tippyFn(this, {
+      content: this.tip,
+      ...this.tippyOptions,
+    });
+  }
+
+  /**
+   * 销毁 tippy 实例并清理引用
+   */
+  private _destroyTippy(): void {
+    if (this._tippyInstance) {
+      this._tippyInstance.destroy();
+      this._tippyInstance = null;
     }
   }
 
@@ -273,7 +416,8 @@ export class StatusTag extends LitElement {
     const classes = {
       'bkbase-status-tag': true,
       [`bkbase-status-tag--${theme}`]: true,
-      [`bkbase-status-tag--type-${this.type}`]: !!this.type
+      [`bkbase-status-tag--type-${this.type}`]: !!this.type,
+      'bkbase-status-tag--has-tip': !!this.tip,
     };
 
     return html`

@@ -2,14 +2,15 @@
  * 状态主题类型
  *
  * @remarks
- * 定义了五种预设的状态主题，每种主题对应不同的视觉样式：
+ * 定义了六种预设的状态主题，每种主题对应不同的视觉样式：
  * - `loading`: 加载中（蓝色，带旋转图标）
  * - `running`: 运行中（绿色）
  * - `stop`: 停止（灰色）
  * - `warning`: 警告（橙色）
- * - `unknown`: 未知（黄橙色）
+ * - `danger`: 异常/危险（红色）
+ * - `unknown`: 未知（红色）
  */
-export type StatusTheme = 'loading' | 'running' | 'stop' | 'warning' | 'unknown';
+export type StatusTheme = 'loading' | 'running' | 'stop' | 'warning' | 'danger' | 'unknown';
 
 /**
  * 状态配置接口
@@ -150,7 +151,29 @@ export interface StatusTagProps {
   'status-map'?: string;
   /** 标签类型 */
   type?: 'stroke' | 'filled' | '';
+  /** 提示文本，hover 时以 tooltip 形式展示 */
+  tip?: string;
+  /** tippy.js 配置选项的 JSON 字符串 */
+  'tippy-options'?: string;
 }
+
+/**
+ * Tippy.js 实例的最小类型定义
+ * 仅声明组件内部使用到的方法，避免强依赖 @types/tippy.js
+ */
+export interface TippyInstance {
+  destroy(): void;
+  setContent(content: string): void;
+  setProps(props: Record<string, unknown>): void;
+}
+
+/**
+ * Tippy.js 创建函数的类型定义
+ */
+export type TippyFunction = (
+  target: Element,
+  options?: Record<string, unknown>,
+) => TippyInstance;
 
 /**
  * 扩展 JSX 类型声明（为 React 和其他框架提供类型支持）
@@ -162,12 +185,10 @@ declare global {
   namespace JSX {
     interface IntrinsicElements {
       'status-tag': Partial<StatusTagProps> & {
-        // 标准 HTML 属性
         class?: string;
         className?: string;
         style?: string | Record<string, string>;
         id?: string;
-        // 事件处理（可选）
         onClick?: (event: MouseEvent) => void;
         onMouseEnter?: (event: MouseEvent) => void;
         onMouseLeave?: (event: MouseEvent) => void;

@@ -51,7 +51,14 @@ $themes: (
     dot-bg: #FCE5C0,
     dot-border: #F59500,
   ),
-  'unknown': ( // This is the Red/Error theme
+  'danger': (
+    bg: #FFEBEB,
+    border: transparent,
+    color: #EA3636,
+    dot-bg: #FDD8D6,
+    dot-border: #EA3636,
+  ),
+  'unknown': (
     bg: #FEEBEA,
     border: #FDD8D6,
     color: #EA3636,
@@ -173,8 +180,25 @@ $themes: (
   @include theme-variant('warning');
 }
 
+.bkbase-status-tag--danger {
+  @include theme-variant('danger');
+}
+
 .bkbase-status-tag--unknown {
   @include theme-variant('unknown');
+}
+
+// ========== Tip 下划线 ==========
+
+.bkbase-status-tag--has-tip {
+  cursor: pointer;
+
+  span:last-child {
+    text-decoration: underline dashed;
+    text-decoration-color: currentColor;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
 }
 
 // ========== 动画 ==========
@@ -285,13 +309,23 @@ $themes: (
     }
   }
 
-  // Unknown/Abnormal Theme Specifics (Using Red)
-  &.bkbase-status-tag--unknown .bkbase-status-tag-dot {
-    background: #ea363629; // Outer Halo
+  // Danger Theme Specifics
+  &.bkbase-status-tag--danger .bkbase-status-tag-dot {
+    background: #ea363629;
     border: none;
 
     &::after {
-      background: #EA3636; // Inner Dot
+      background: #EA3636;
+    }
+  }
+
+  // Unknown/Abnormal Theme Specifics
+  &.bkbase-status-tag--unknown .bkbase-status-tag-dot {
+    background: #ea363629;
+    border: none;
+
+    &::after {
+      background: #EA3636;
     }
   }
 }
