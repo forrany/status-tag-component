@@ -2,15 +2,15 @@
  * 状态主题类型
  *
  * @remarks
- * 定义了六种预设的状态主题，每种主题对应不同的视觉样式：
- * - `loading`: 加载中（蓝色，带旋转图标）
- * - `running`: 运行中（绿色）
- * - `stop`: 停止（灰色）
- * - `warning`: 警告（橙色）
- * - `danger`: 异常/危险（红色）
- * - `unknown`: 未知（红色）
+ * 定义了四种预设的主色主题，每种对应一种视觉风格：
+ * - `loading`: 蓝色（带旋转图标）
+ * - `running`: 绿色
+ * - `unknown`: 灰色
+ * - `warning`: 黄色/橙色
+ *
+ * 通过 `status-map` 可将任意业务状态映射到这四种主题
  */
-export type StatusTheme = 'loading' | 'running' | 'stop' | 'warning' | 'danger' | 'unknown';
+export type StatusTheme = 'loading' | 'running' | 'unknown' | 'warning';
 
 /**
  * 状态配置接口
@@ -86,18 +86,16 @@ export interface StatusMapConfig {
  *     status: {
  *       loading: '加载中',
  *       running: '运行中',
- *       stop: '停止',
- *       warning: '警告',
- *       unknown: '未知'
+ *       unknown: '未知',
+ *       warning: '警告'
  *     }
  *   },
  *   'en-US': {
  *     status: {
  *       loading: 'Loading',
  *       running: 'Running',
- *       stop: 'Stop',
- *       warning: 'Warning',
- *       unknown: 'Unknown'
+ *       unknown: 'Unknown',
+ *       warning: 'Warning'
  *     }
  *   }
  * };
@@ -116,12 +114,10 @@ export interface LocaleResources {
       loading: string;
       /** 运行中 */
       running: string;
-      /** 停止 */
-      stop: string;
-      /** 警告 */
-      warning: string;
       /** 未知 */
       unknown: string;
+      /** 警告 */
+      warning: string;
     };
   };
 }
@@ -151,6 +147,8 @@ export interface StatusTagProps {
   'status-map'?: string;
   /** 标签类型 */
   type?: 'stroke' | 'filled' | '';
+  /** 是否显示边框，默认 true */
+  border?: boolean;
   /** 提示文本，hover 时以 tooltip 形式展示 */
   tip?: string;
   /** tippy.js 配置选项的 JSON 字符串 */

@@ -2,10 +2,7 @@
   "status": {
     "loading": "Loading",
     "running": "Running",
-    "stop": "Stopped",
-    "warning": "Warning",
-    "danger": "Abnormal",
     "unknown": "Unknown",
-    "failed": "Failed"
+    "warning": "Warning"
   }
 }

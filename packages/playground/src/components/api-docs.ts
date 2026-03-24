@@ -101,26 +101,44 @@ export class ApiDocs extends LitElement {
             <tbody>
               <tr>
                 <td><code>status</code></td>
-                <td><div class="desc">当前状态值。支持大小写不敏感匹配。</div></td>
+                <td><div class="desc">当前状态值。支持大小写不敏感匹配，未匹配时回退到 unknown。</div></td>
                 <td><code class="type-code">string</code></td>
                 <td><span class="default">'unknown'</span></td>
               </tr>
               <tr>
                 <td><code>type</code></td>
-                <td><div class="desc">样式类型。支持 'stroke' | 'filled'。</div></td>
-                <td><code class="type-code">string</code></td>
+                <td><div class="desc">展现形态。<code>''</code> 默认带背景框；<code>'stroke'</code> 描边圆点；<code>'filled'</code> 光晕实心圆点。</div></td>
+                <td><code class="type-code">'' | 'stroke' | 'filled'</code></td>
                 <td><span class="default">''</span></td>
               </tr>
               <tr>
+                <td><code>border</code></td>
+                <td><div class="desc">是否显示标签外框边框。设为 <code>false</code> 时隐藏边框。</div></td>
+                <td><code class="type-code">boolean</code></td>
+                <td><span class="default">true</span></td>
+              </tr>
+              <tr>
                 <td><code>locale</code></td>
-                <td><div class="desc">国际化语言代码。支持 'zh-CN' | 'en-US'。</div></td>
-                <td><code class="type-code">string</code></td>
+                <td><div class="desc">国际化语言。未设置时自动从 <code>blueking_language</code> cookie 读取。</div></td>
+                <td><code class="type-code">'zh-CN' | 'en-US'</code></td>
                 <td><span class="default">'zh-CN'</span></td>
               </tr>
               <tr>
                 <td><code>status-map</code></td>
-                <td><div class="desc">自定义状态映射配置 JSON 字符串。</div></td>
+                <td><div class="desc">自定义状态映射。将业务状态映射到四种主色主题，支持自定义文字。</div></td>
                 <td><code class="type-code">string | StatusMapConfig</code></td>
+                <td><span class="default">{}</span></td>
+              </tr>
+              <tr>
+                <td><code>tip</code></td>
+                <td><div class="desc">Tooltip 提示文本。hover 时展示，优先使用 tippy.js，不可用时降级为原生 title。</div></td>
+                <td><code class="type-code">string</code></td>
+                <td><span class="default">''</span></td>
+              </tr>
+              <tr>
+                <td><code>tippy-options</code></td>
+                <td><div class="desc">tippy.js 配置选项的 JSON 字符串，透传给 tippy 实例。</div></td>
+                <td><code class="type-code">string | object</code></td>
                 <td><span class="default">{}</span></td>
               </tr>
             </tbody>
@@ -139,28 +157,25 @@ export class ApiDocs extends LitElement {
             </thead>
             <tbody>
               <tr>
-                <td><code>StatusMapConfig</code></td>
+                <td><code>StatusTheme</code></td>
                 <td>
-                  <code>Record&lt;string, StatusConfig&gt;</code>
+                  <code>'loading' | 'running' | 'unknown' | 'warning'</code>
                 </td>
-                <td><div class="desc">状态映射配置对象，key 为状态值。</div></td>
+                <td><div class="desc">四种主色主题：蓝（loading）、绿（running）、灰（unknown）、黄（warning）。</div></td>
               </tr>
               <tr>
                 <td><code>StatusConfig</code></td>
                 <td>
-                  <pre style="margin: 0; background: transparent; padding: 0;">{
-  text: string;
-  theme: StatusTheme;
-}</pre>
+                  <pre style="margin: 0; background: transparent; padding: 0;">{ text: string; theme: StatusTheme; }</pre>
                 </td>
-                <td><div class="desc">单个状态的配置，包含显示文本和主题。</div></td>
+                <td><div class="desc">单个状态配置，text 为显示文本（支持 i18n 键），theme 决定视觉主色。</div></td>
               </tr>
               <tr>
-                <td><code>StatusTheme</code></td>
+                <td><code>StatusMapConfig</code></td>
                 <td>
-                  <code>'loading' | 'running' | 'stop' | 'warning' | 'unknown'</code>
+                  <code>Record&lt;string, StatusConfig&gt;</code>
                 </td>
-                <td><div class="desc">支持的主题类型。</div></td>
+                <td><div class="desc">状态映射表。key 为业务状态值，value 为对应的 StatusConfig。</div></td>
               </tr>
             </tbody>
           </table>

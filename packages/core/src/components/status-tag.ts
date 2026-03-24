@@ -10,16 +10,14 @@ import styles from './status-tag.scss?inline';
 
 /**
  * 默认状态映射配置
- * 定义了五种预设状态及其对应的主题和文本
+ * 四种基础状态，对应四种主色主题
+ * 业务方可通过 status-map 属性自定义扩展
  */
 const DEFAULT_STATUS_MAP: Readonly<StatusMapConfig> = {
   loading: { text: 'loading', theme: 'loading' },
   running: { text: 'running', theme: 'running' },
-  stop: { text: 'stop', theme: 'stop' },
+  unknown: { text: 'unknown', theme: 'unknown' },
   warning: { text: 'warning', theme: 'warning' },
-  danger: { text: 'danger', theme: 'danger' },
-  unknown: { text: 'unknown', theme: 'stop' },
-  failed: { text: 'failed', theme: 'unknown' },
 } as const;
 
 /**
@@ -119,6 +117,26 @@ export class StatusTag extends LitElement {
    */
   @property({ type: String, reflect: true })
   locale: string = 'zh-CN';
+
+  /**
+   * 是否显示边框
+   * 设为 false 时隐藏标签外框 border，适用于无边框的设计风格
+   * @default true
+   */
+  @property({
+    type: Boolean,
+    reflect: true,
+    converter: {
+      fromAttribute: (value: string | null): boolean => {
+        if (value === null || value === 'false') return false;
+        return true;
+      },
+      toAttribute: (value: boolean): string | null => {
+        return value ? '' : null;
+      }
+    }
+  })
+  border: boolean = true;
 
   /**
    * 提示文本
@@ -412,12 +430,12 @@ export class StatusTag extends LitElement {
     const currentStatus = this._getCurrentStatus();
     const { theme, text } = currentStatus;
 
-    // 使用 classMap 指令动态生成类名
     const classes = {
       'bkbase-status-tag': true,
       [`bkbase-status-tag--${theme}`]: true,
       [`bkbase-status-tag--type-${this.type}`]: !!this.type,
       'bkbase-status-tag--has-tip': !!this.tip,
+      'bkbase-status-tag--no-border': !this.border,
     };
 
     return html`

@@ -2,10 +2,7 @@
   "status": {
     "loading": "加载中",
     "running": "运行中",
-    "stop": "已停止",
-    "warning": "警告",
-    "danger": "异常",
     "unknown": "未知",
-    "failed": "失败"
+    "warning": "警告"
   }
 }

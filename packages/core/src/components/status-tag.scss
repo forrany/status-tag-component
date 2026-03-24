@@ -1,34 +1,35 @@
 /**
  * 状态标签组件样式
- * 使用 SCSS 编写，支持嵌套、变量、混合等特性
+ *
+ * 四种主色主题：loading（蓝）、running（绿）、unknown（灰）、warning（黄）
+ * 三种展现类型：default（标签框）、stroke（描边圆点）、filled（光晕圆点）
+ * 可选 border 控制
  */
 
-// 使用新的 SCSS 模块系统
 @use 'sass:map';
 
 // ========== 设计令牌 / Design Tokens ==========
 
-// 尺寸变量
 $tag-height: 22px;
 $tag-padding: 0 8px;
 $tag-border-radius: 13px;
 $tag-font-size: 12px;
 $tag-font-weight: 700;
 
-// 图标尺寸
 $icon-size: 12px;
 $dot-size: 6px;
 $icon-margin: 4px;
 
-// 动画时长
 $loading-duration: 1s;
 
-// 主题颜色配置
+// 四色主题配置
 $themes: (
   'loading': (
     bg: #EDF4FF,
     border: #CDDFFE,
     color: #699DF4,
+    dot-bg: #CDDFFE,
+    dot-border: #699DF4,
   ),
   'running': (
     bg: #EBFAEF,
@@ -37,7 +38,7 @@ $themes: (
     dot-bg: #E5F6EA,
     dot-border: #3FC06D,
   ),
-  'stop': (
+  'unknown': (
     bg: #F5F7FA,
     border: #EAEBF0,
     color: #979BA5,
@@ -51,50 +52,36 @@ $themes: (
     dot-bg: #FCE5C0,
     dot-border: #F59500,
   ),
-  'danger': (
-    bg: #FFEBEB,
-    border: transparent,
-    color: #EA3636,
-    dot-bg: #FDD8D6,
-    dot-border: #EA3636,
-  ),
-  'unknown': (
-    bg: #FEEBEA,
-    border: #FDD8D6,
-    color: #EA3636,
-    dot-bg: #FDD8D6,
-    dot-border: #EA3636,
-  ),
+);
+
+// stroke 类型专属色值（8px 描边圆点）
+$stroke-themes: (
+  'loading': ( bg: #CDDFFE, border: #699DF4 ),
+  'running': ( bg: #CBF0DA, border: #2CAF5E ),
+  'unknown': ( bg: #F0F1F5, border: #C4C6CC ),
+  'warning': ( bg: #FCE5C0, border: #F59500 ),
+);
+
+// filled 类型专属色值（13px 光晕 + 7px 实心）
+$filled-themes: (
+  'loading': ( halo: #CDDFFE, dot: #699DF4 ),
+  'running': ( halo: #DAF6E5, dot: #3FC06D ),
+  'unknown': ( halo: #979ba529, dot: #979BA5 ),
+  'warning': ( halo: #FDEED8, dot: #F59500 ),
 );
 
 // ========== 混合 / Mixins ==========
 
-/**
- * 生成主题样式的混合
- * @param {String} $theme - 主题名称
- */
 @mixin theme-variant($theme) {
   $config: map.get($themes, $theme);
 
   background-color: map.get($config, 'bg');
   color: map.get($config, 'color');
+  border: 1px solid map.get($config, 'border');
 
-  @if map.has-key($config, 'border') {
-    $border-color: map.get($config, 'border');
-    @if $border-color != transparent {
-      border: 1px solid $border-color;
-    }
-  }
-
-  // 圆点样式
-  @if map.has-key($config, 'dot-bg') {
-    .bkbase-status-tag-dot {
-      background: map.get($config, 'dot-bg');
-
-      @if map.has-key($config, 'dot-border') {
-        border: 1px solid map.get($config, 'dot-border');
-      }
-    }
+  .bkbase-status-tag-dot {
+    background: map.get($config, 'dot-bg');
+    border: 1px solid map.get($config, 'dot-border');
   }
 }
 
@@ -121,10 +108,6 @@ $themes: (
 
 // ========== 图标样式 ==========
 
-/**
- * 加载图标
- * 使用 CSS 变量接收 SVG Data URI
- */
 .bkbase-status-tag-loading {
   display: inline-block;
   width: $icon-size;
@@ -137,10 +120,6 @@ $themes: (
   animation: bk-status-loading-rotate $loading-duration linear infinite;
 }
 
-/**
- * 状态圆点
- * 带发光效果的圆形指示器
- */
 .bkbase-status-tag-dot {
   display: inline-block;
   width: $dot-size;
@@ -150,7 +129,6 @@ $themes: (
   background-color: #c4c6cc;
   position: relative;
 
-  // 发光效果（使用伪元素）
   &::before {
     content: '';
     position: absolute;
@@ -164,28 +142,16 @@ $themes: (
 
 // ========== 主题变体 ==========
 
-.bkbase-status-tag--loading {
-  @include theme-variant('loading');
+@each $name in ('loading', 'running', 'unknown', 'warning') {
+  .bkbase-status-tag--#{$name} {
+    @include theme-variant($name);
+  }
 }
 
-.bkbase-status-tag--running {
-  @include theme-variant('running');
-}
+// ========== 无边框变体 ==========
 
-.bkbase-status-tag--stop {
-  @include theme-variant('stop');
-}
-
-.bkbase-status-tag--warning {
-  @include theme-variant('warning');
-}
-
-.bkbase-status-tag--danger {
-  @include theme-variant('danger');
-}
-
-.bkbase-status-tag--unknown {
-  @include theme-variant('unknown');
+.bkbase-status-tag--no-border {
+  border-color: transparent;
 }
 
 // ========== Tip 下划线 ==========
@@ -203,58 +169,46 @@ $themes: (
 
 // ========== 动画 ==========
 
-/**
- * 加载图标旋转动画
- */
 @keyframes bk-status-loading-rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 // ========== 类型变体 / Types ==========
 
-// 通用类型样式：移除背景框
 .bkbase-status-tag--type-stroke,
 .bkbase-status-tag--type-filled {
   background-color: transparent;
   border: none;
   padding: 0;
-  // 统一文字颜色
   color: #4D4F56;
-  // 统一字体粗细
   font-weight: 400;
-  
-  // 调整文字间距
+
   span:last-child {
     margin-left: 4px;
   }
 }
 
-// Type: Stroke (8px Ring)
+// Type: Stroke (8px 描边圆点)
 .bkbase-status-tag--type-stroke {
   .bkbase-status-tag-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     box-sizing: border-box;
-    // 移除原有发光伪元素
     &::before { display: none; }
   }
 
-  // Running Theme Specifics
-  &.bkbase-status-tag--running .bkbase-status-tag-dot {
-    background: #CBF0DA;
-    border: 1px solid #2CAF5E;
+  @each $name in ('loading', 'running', 'unknown', 'warning') {
+    $config: map.get($stroke-themes, $name);
+    &.bkbase-status-tag--#{$name} .bkbase-status-tag-dot {
+      background: map.get($config, 'bg');
+      border: 1px solid map.get($config, 'border');
+    }
   }
 }
 
-// Type: Filled (Halo Effect)
-// Outer: 13px Halo
-// Inner: 7px Solid Dot
+// Type: Filled (13px 光晕 + 7px 实心)
 .bkbase-status-tag--type-filled {
   .bkbase-status-tag-dot {
     width: 13px;
@@ -262,11 +216,9 @@ $themes: (
     border-radius: 50%;
     box-sizing: border-box;
     position: relative;
-    
-    // 移除原有发光伪元素
+
     &::before { display: none; }
-    
-    // Inner Dot
+
     &::after {
       content: '';
       position: absolute;
@@ -279,53 +231,15 @@ $themes: (
     }
   }
 
-  // Running Theme Specifics
-  &.bkbase-status-tag--running .bkbase-status-tag-dot {
-    background: #DAF6E5; // Outer Halo
-    border: none;
-    
-    &::after {
-      background: #3FC06D; // Inner Dot
-    }
-  }
+  @each $name in ('loading', 'running', 'unknown', 'warning') {
+    $config: map.get($filled-themes, $name);
+    &.bkbase-status-tag--#{$name} .bkbase-status-tag-dot {
+      background: map.get($config, 'halo');
+      border: none;
 
-  // Stop Theme Specifics
-  &.bkbase-status-tag--stop .bkbase-status-tag-dot {
-    background: #979ba529; // Outer Halo
-    border: none;
-
-    &::after {
-      background: #979BA5; // Inner Dot
-    }
-  }
-
-  // Warning Theme Specifics
-  &.bkbase-status-tag--warning .bkbase-status-tag-dot {
-    background: #FDEED8; // Outer Halo
-    border: none;
-
-    &::after {
-      background: #F59500; // Inner Dot
-    }
-  }
-
-  // Danger Theme Specifics
-  &.bkbase-status-tag--danger .bkbase-status-tag-dot {
-    background: #ea363629;
-    border: none;
-
-    &::after {
-      background: #EA3636;
-    }
-  }
-
-  // Unknown/Abnormal Theme Specifics
-  &.bkbase-status-tag--unknown .bkbase-status-tag-dot {
-    background: #ea363629;
-    border: none;
-
-    &::after {
-      background: #EA3636;
+      &::after {
+        background: map.get($config, 'dot');
+      }
     }
   }
 }
