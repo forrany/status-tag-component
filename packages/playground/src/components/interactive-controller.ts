@@ -176,6 +176,7 @@ export class InteractiveController extends LitElement {
                 <option value="running" selected>running</option>
                 <option value="unknown">unknown</option>
                 <option value="warning">warning</option>
+                <option value="danger">danger</option>
               </select>
             </label>
 

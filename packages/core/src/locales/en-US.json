@@ -3,6 +3,7 @@
     "loading": "Loading",
     "running": "Running",
     "unknown": "Unknown",
-    "warning": "Warning"
+    "warning": "Warning",
+    "danger": "Danger"
   }
 }

@@ -3,6 +3,7 @@
     "loading": "加载中",
     "running": "运行中",
     "unknown": "未知",
-    "warning": "警告"
+    "warning": "警告",
+    "danger": "异常"
   }
 }

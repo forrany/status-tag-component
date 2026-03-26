@@ -18,6 +18,7 @@ const DEFAULT_STATUS_MAP: Readonly<StatusMapConfig> = {
   running: { text: 'running', theme: 'running' },
   unknown: { text: 'unknown', theme: 'unknown' },
   warning: { text: 'warning', theme: 'warning' },
+  danger: { text: 'danger', theme: 'danger' },
 } as const;
 
 /**

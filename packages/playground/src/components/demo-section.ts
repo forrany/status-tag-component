@@ -128,18 +128,20 @@ export class DemoSection extends LitElement {
       <section class="section">
         <h2>🚀 快速开始</h2>
         <div class="demo-card">
-          <h3>基础用法 — 四种主色主题</h3>
+          <h3>基础用法 — 五种主色主题</h3>
           <div class="demo-preview">
             <status-tag status="loading"></status-tag>
             <status-tag status="running"></status-tag>
             <status-tag status="unknown"></status-tag>
             <status-tag status="warning"></status-tag>
+            <status-tag status="danger"></status-tag>
           </div>
           <div class="demo-code">
             <pre><code>&lt;status-tag status="loading"&gt;&lt;/status-tag&gt;
 &lt;status-tag status="running"&gt;&lt;/status-tag&gt;
 &lt;status-tag status="unknown"&gt;&lt;/status-tag&gt;
-&lt;status-tag status="warning"&gt;&lt;/status-tag&gt;</code></pre>
+&lt;status-tag status="warning"&gt;&lt;/status-tag&gt;
+&lt;status-tag status="danger"&gt;&lt;/status-tag&gt;</code></pre>
           </div>
         </div>
       </section>
@@ -148,7 +150,7 @@ export class DemoSection extends LitElement {
       <section class="section">
         <h2>🎭 样式类型</h2>
         <div class="demo-card">
-          <h3>三种展现形态 × 四种主色</h3>
+          <h3>三种展现形态 × 五种主色</h3>
           <div class="demo-preview">
             <div class="demo-grid">
               <div class="demo-row">
@@ -158,6 +160,7 @@ export class DemoSection extends LitElement {
                   <status-tag status="running"></status-tag>
                   <status-tag status="unknown"></status-tag>
                   <status-tag status="warning"></status-tag>
+                  <status-tag status="danger"></status-tag>
                 </div>
               </div>
               <div class="demo-row">
@@ -167,6 +170,7 @@ export class DemoSection extends LitElement {
                   <status-tag status="running" type="stroke"></status-tag>
                   <status-tag status="unknown" type="stroke"></status-tag>
                   <status-tag status="warning" type="stroke"></status-tag>
+                  <status-tag status="danger" type="stroke"></status-tag>
                 </div>
               </div>
               <div class="demo-row">
@@ -176,6 +180,7 @@ export class DemoSection extends LitElement {
                   <status-tag status="running" type="filled"></status-tag>
                   <status-tag status="unknown" type="filled"></status-tag>
                   <status-tag status="warning" type="filled"></status-tag>
+                  <status-tag status="danger" type="filled"></status-tag>
                 </div>
               </div>
             </div>
@@ -207,6 +212,7 @@ export class DemoSection extends LitElement {
                   <status-tag status="running"></status-tag>
                   <status-tag status="unknown"></status-tag>
                   <status-tag status="warning"></status-tag>
+                  <status-tag status="danger"></status-tag>
                 </div>
               </div>
               <div class="demo-row">
@@ -216,6 +222,7 @@ export class DemoSection extends LitElement {
                   <status-tag status="running" border="false"></status-tag>
                   <status-tag status="unknown" border="false"></status-tag>
                   <status-tag status="warning" border="false"></status-tag>
+                  <status-tag status="danger" border="false"></status-tag>
                 </div>
               </div>
             </div>
@@ -243,6 +250,7 @@ export class DemoSection extends LitElement {
                 <status-tag status="running" locale="zh-CN"></status-tag>
                 <status-tag status="unknown" locale="zh-CN"></status-tag>
                 <status-tag status="warning" locale="zh-CN"></status-tag>
+                <status-tag status="danger" locale="zh-CN"></status-tag>
               </div>
             </div>
             <div class="i18n-column">
@@ -252,6 +260,7 @@ export class DemoSection extends LitElement {
                 <status-tag status="running" locale="en-US"></status-tag>
                 <status-tag status="unknown" locale="en-US"></status-tag>
                 <status-tag status="warning" locale="en-US"></status-tag>
+                <status-tag status="danger" locale="en-US"></status-tag>
               </div>
             </div>
           </div>

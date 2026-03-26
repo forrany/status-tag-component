@@ -2,15 +2,16 @@
  * 状态主题类型
  *
  * @remarks
- * 定义了四种预设的主色主题，每种对应一种视觉风格：
+ * 定义了五种预设的主色主题，每种对应一种视觉风格：
  * - `loading`: 蓝色（带旋转图标）
  * - `running`: 绿色
  * - `unknown`: 灰色
  * - `warning`: 黄色/橙色
+ * - `danger`: 红色
  *
- * 通过 `status-map` 可将任意业务状态映射到这四种主题
+ * 通过 `status-map` 可将任意业务状态映射到这五种主题
  */
-export type StatusTheme = 'loading' | 'running' | 'unknown' | 'warning';
+export type StatusTheme = 'loading' | 'running' | 'unknown' | 'warning' | 'danger';
 
 /**
  * 状态配置接口
@@ -118,6 +119,8 @@ export interface LocaleResources {
       unknown: string;
       /** 警告 */
       warning: string;
+      /** 异常/危险 */
+      danger: string;
     };
   };
 }

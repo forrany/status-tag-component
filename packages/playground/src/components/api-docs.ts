@@ -159,9 +159,9 @@ export class ApiDocs extends LitElement {
               <tr>
                 <td><code>StatusTheme</code></td>
                 <td>
-                  <code>'loading' | 'running' | 'unknown' | 'warning'</code>
+                  <code>'loading' | 'running' | 'unknown' | 'warning' | 'danger'</code>
                 </td>
-                <td><div class="desc">四种主色主题：蓝（loading）、绿（running）、灰（unknown）、黄（warning）。</div></td>
+                <td><div class="desc">五种主色主题：蓝（loading）、绿（running）、灰（unknown）、黄（warning）、红（danger）。</div></td>
               </tr>
               <tr>
                 <td><code>StatusConfig</code></td>

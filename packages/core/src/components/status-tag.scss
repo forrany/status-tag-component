@@ -1,7 +1,7 @@
 /**
  * 状态标签组件样式
  *
- * 四种主色主题：loading（蓝）、running（绿）、unknown（灰）、warning（黄）
+ * 五种主色主题：loading（蓝）、running（绿）、unknown（灰）、warning（黄）、danger（红）
  * 三种展现类型：default（标签框）、stroke（描边圆点）、filled（光晕圆点）
  * 可选 border 控制
  */
@@ -22,7 +22,7 @@ $icon-margin: 4px;
 
 $loading-duration: 1s;
 
-// 四色主题配置
+// 五色主题配置
 $themes: (
   'loading': (
     bg: #EDF4FF,
@@ -52,6 +52,13 @@ $themes: (
     dot-bg: #FCE5C0,
     dot-border: #F59500,
   ),
+  'danger': (
+    bg: #FEEBEA,
+    border: #FDD8D6,
+    color: #EA3636,
+    dot-bg: #FDD8D6,
+    dot-border: #EA3636,
+  ),
 );
 
 // stroke 类型专属色值（8px 描边圆点）
@@ -60,6 +67,7 @@ $stroke-themes: (
   'running': ( bg: #CBF0DA, border: #2CAF5E ),
   'unknown': ( bg: #F0F1F5, border: #C4C6CC ),
   'warning': ( bg: #FCE5C0, border: #F59500 ),
+  'danger': ( bg: #FDD8D6, border: #EA3636 ),
 );
 
 // filled 类型专属色值（13px 光晕 + 7px 实心）
@@ -68,6 +76,7 @@ $filled-themes: (
   'running': ( halo: #DAF6E5, dot: #3FC06D ),
   'unknown': ( halo: #979ba529, dot: #979BA5 ),
   'warning': ( halo: #FDEED8, dot: #F59500 ),
+  'danger': ( halo: #ea363629, dot: #EA3636 ),
 );
 
 // ========== 混合 / Mixins ==========
@@ -142,7 +151,7 @@ $filled-themes: (
 
 // ========== 主题变体 ==========
 
-@each $name in ('loading', 'running', 'unknown', 'warning') {
+@each $name in ('loading', 'running', 'unknown', 'warning', 'danger') {
   .bkbase-status-tag--#{$name} {
     @include theme-variant($name);
   }
@@ -199,7 +208,7 @@ $filled-themes: (
     &::before { display: none; }
   }
 
-  @each $name in ('loading', 'running', 'unknown', 'warning') {
+  @each $name in ('loading', 'running', 'unknown', 'warning', 'danger') {
     $config: map.get($stroke-themes, $name);
     &.bkbase-status-tag--#{$name} .bkbase-status-tag-dot {
       background: map.get($config, 'bg');
@@ -231,7 +240,7 @@ $filled-themes: (
     }
   }
 
-  @each $name in ('loading', 'running', 'unknown', 'warning') {
+  @each $name in ('loading', 'running', 'unknown', 'warning', 'danger') {
     $config: map.get($filled-themes, $name);
     &.bkbase-status-tag--#{$name} .bkbase-status-tag-dot {
       background: map.get($config, 'halo');
