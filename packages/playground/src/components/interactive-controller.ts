@@ -1,6 +1,10 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import '@blueking/status-tag';
+import { sharedDemoCustomIconPartStyles } from './shared-demo-custom-icon-part-styles';
+
+type CustomIconPreset = '' | 'check' | 'warn' | 'star';
 
 @customElement('interactive-controller')
 export class InteractiveController extends LitElement {
@@ -10,8 +14,11 @@ export class InteractiveController extends LitElement {
   @state() private border = true;
   @state() private useCustomMap = false;
   @state() private customText = '';
+  /** 与基础演示区一致：宿主 class + custom-icon="demo-bs-i"，仅 Playground 预览用 */
+  @state() private customIconPreset: CustomIconPreset = '';
 
-  static styles = css`
+  static styles = [
+    css`
     :host { display: block; }
 
     h2 {
@@ -133,7 +140,9 @@ export class InteractiveController extends LitElement {
       line-height: 1.5;
       color: #abb2bf;
     }
-  `;
+  `,
+    sharedDemoCustomIconPartStyles,
+  ];
 
   private get _statusMap(): Record<string, { text: string; theme: string }> {
     if (!this.useCustomMap || !this.customText) return {};
@@ -142,11 +151,28 @@ export class InteractiveController extends LitElement {
     };
   }
 
+  private get _customIconHostClass(): string {
+    switch (this.customIconPreset) {
+      case 'check':
+        return 'demo-bs--check';
+      case 'warn':
+        return 'demo-bs--warn';
+      case 'star':
+        return 'demo-bs--star';
+      default:
+        return '';
+    }
+  }
+
   private _renderCode(): string {
     const attrs = [`status="${this.status}"`];
     if (this.type) attrs.push(`type="${this.type}"`);
     if (this.locale !== 'zh-CN') attrs.push(`locale="${this.locale}"`);
     if (!this.border) attrs.push(`border="false"`);
+    if (this.customIconPreset) {
+      attrs.push(`class="${this._customIconHostClass}"`);
+      attrs.push(`custom-icon="demo-bs-i"`);
+    }
     if (this.useCustomMap && this.customText) {
       attrs.push(`status-map='${JSON.stringify(this._statusMap)}'`);
     }
@@ -160,10 +186,16 @@ export class InteractiveController extends LitElement {
         <div class="demo-card">
           <div class="preview">
             <status-tag
+              class=${classMap({
+                'demo-bs--check': this.customIconPreset === 'check',
+                'demo-bs--warn': this.customIconPreset === 'warn',
+                'demo-bs--star': this.customIconPreset === 'star',
+              })}
               status=${this.status}
               type=${this.type}
               locale=${this.locale}
               ?border=${this.border}
+              custom-icon=${this.customIconPreset ? 'demo-bs-i' : nothing}
               .statusMap=${this._statusMap}
             ></status-tag>
           </div>
@@ -186,6 +218,23 @@ export class InteractiveController extends LitElement {
                 <option value="" selected>Default</option>
                 <option value="stroke">Stroke</option>
                 <option value="filled">Filled</option>
+              </select>
+            </label>
+
+            <label>
+              custom-icon
+              <select
+                .value=${this.customIconPreset}
+                @change=${(e: Event) => {
+                  const v = (e.target as HTMLSelectElement).value;
+                  this.customIconPreset =
+                    v === 'check' || v === 'warn' || v === 'star' ? v : '';
+                }}
+              >
+                <option value="">无（内置圆点/加载）</option>
+                <option value="check">演示：对勾（demo-bs--check）</option>
+                <option value="warn">演示：警告三角（demo-bs--warn）</option>
+                <option value="star">演示：星标（demo-bs--star）</option>
               </select>
             </label>
 

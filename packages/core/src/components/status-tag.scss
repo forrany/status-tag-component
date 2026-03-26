@@ -129,6 +129,17 @@ $filled-themes: (
   animation: bk-status-loading-rotate $loading-duration linear infinite;
 }
 
+// 仅负责与内置圆点/加载图标一致的外边距与对齐，不定义具体图标外观（由用户 class 决定）
+.bkbase-status-tag-custom-icon-root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: $icon-margin;
+  flex-shrink: 0;
+  line-height: 1;
+  font-size: $icon-size;
+}
+
 .bkbase-status-tag-dot {
   display: inline-block;
   width: $dot-size;

@@ -42,8 +42,8 @@ export interface StatusConfig {
   theme: StatusTheme;
 
   /**
-   * 自定义图标（可选）
-   * 预留字段，当前版本未实现自定义图标功能
+   * 自定义图标 class（可选）
+   * 与根节点 `custom-icon` 二选一逻辑：属性优先；有值时前置渲染 `<i class="...">`，不使用内置圆点/加载图标
    */
   icon?: string;
 }
@@ -156,6 +156,10 @@ export interface StatusTagProps {
   tip?: string;
   /** tippy.js 配置选项的 JSON 字符串 */
   'tippy-options'?: string;
+  /**
+   * 自定义图标：传入 class 字符串（可含多个 class），渲染为 `<i class="..."></i>`，不使用内置圆点/加载图标
+   */
+  'custom-icon'?: string;
 }
 
 /**

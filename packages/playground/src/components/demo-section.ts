@@ -6,10 +6,12 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import '@blueking/status-tag';
+import { sharedDemoCustomIconPartStyles } from './shared-demo-custom-icon-part-styles';
 
 @customElement('demo-section')
 export class DemoSection extends LitElement {
-  static styles = css`
+  static styles = [
+    css`
     :host {
       display: block;
     }
@@ -120,7 +122,24 @@ export class DemoSection extends LitElement {
         grid-template-columns: 1fr;
       }
     }
-  `;
+
+    .demo-hint {
+      margin: 0 0 16px 0;
+      font-size: 13px;
+      color: #979ba5;
+      line-height: 1.5;
+    }
+
+    .demo-hint code {
+      padding: 2px 6px;
+      background: #f0f1f5;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #63656e;
+    }
+  `,
+    sharedDemoCustomIconPartStyles,
+  ];
 
   render() {
     return html`
@@ -317,6 +336,142 @@ export class DemoSection extends LitElement {
 &lt;status-tag
   status="deploying"
   status-map='{"deploying": {"text": "部署中", "theme": "loading"}}'
+&gt;&lt;/status-tag&gt;</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 自定义前置图标 -->
+      <section class="section">
+        <h2>🎯 自定义前置图标</h2>
+        <div class="demo-card">
+          <h3>
+            仅用 <code>custom-icon</code>（演示：
+            <a href="https://icons.getbootstrap.com/" target="_blank" rel="noopener noreferrer">Bootstrap Icons</a>
+            字体 + <code>::part</code>）
+          </h3>
+          <p class="demo-hint">
+            组件只负责渲染 <code>&lt;i part="custom-icon" class="…"&gt;</code>。
+            Shadow 内全局 <code>.bi</code> 无效；且 CSS 不允许
+            <code>::part(custom-icon)</code> 后面再接类名，应把区分样式写在
+            <strong>宿主</strong>上，例如
+            <code>status-tag.my-scene::part(custom-icon)::before { … }</code>（本页用
+            <code>demo-bs--check</code> / <code>demo-bs--warn</code> / <code>demo-bs--star</code>）。
+            业务侧用自有 icon class / 字体时，在页面样式里写
+            <code>status-tag.你的场景::part(custom-icon) { … }</code> 即可（勿写 <code>::part(x).内部class</code>）。
+            <code>type</code> 可与 <code>custom-icon</code> 组合；<code>status-map.icon</code> 与根节点
+            <code>custom-icon</code> 优先级不变。
+          </p>
+          <div class="demo-preview">
+            <div class="demo-grid">
+              <div class="demo-row">
+                <span class="demo-row-label">Default</span>
+                <div class="demo-row-tags">
+                  <status-tag
+                    class="demo-bs--check"
+                    status="running"
+                    custom-icon="demo-bs-i"
+                  ></status-tag>
+                  <status-tag
+                    class="demo-bs--warn"
+                    status="warning"
+                    custom-icon="demo-bs-i"
+                  ></status-tag>
+                  <status-tag
+                    class="demo-bs--check"
+                    status="unknown"
+                    custom-icon="demo-bs-i"
+                  ></status-tag>
+                </div>
+              </div>
+              <div class="demo-row">
+                <span class="demo-row-label">Stroke</span>
+                <div class="demo-row-tags">
+                  <status-tag
+                    class="demo-bs--check"
+                    type="stroke"
+                    status="running"
+                    custom-icon="demo-bs-i"
+                  ></status-tag>
+                  <status-tag
+                    class="demo-bs--warn"
+                    type="stroke"
+                    status="warning"
+                    custom-icon="demo-bs-i"
+                  ></status-tag>
+                  <status-tag
+                    class="demo-bs--warn"
+                    type="stroke"
+                    status="danger"
+                    custom-icon="demo-bs-i"
+                  ></status-tag>
+                </div>
+              </div>
+              <div class="demo-row">
+                <span class="demo-row-label">Filled</span>
+                <div class="demo-row-tags">
+                  <status-tag
+                    class="demo-bs--check"
+                    type="filled"
+                    status="running"
+                    custom-icon="demo-bs-i"
+                  ></status-tag>
+                  <status-tag
+                    class="demo-bs--warn"
+                    type="filled"
+                    status="warning"
+                    custom-icon="demo-bs-i"
+                  ></status-tag>
+                  <status-tag
+                    class="demo-bs--check"
+                    type="filled"
+                    status="unknown"
+                    custom-icon="demo-bs-i"
+                  ></status-tag>
+                </div>
+              </div>
+              <div class="demo-row">
+                <span class="demo-row-label">map</span>
+                <div class="demo-row-tags">
+                  <status-tag
+                    class="demo-bs--star"
+                    status="vip"
+                    status-map='{"vip": {"text": "重点", "theme": "danger", "icon": "demo-bs-i"}}'
+                  ></status-tag>
+                  <status-tag
+                    class="demo-bs--star"
+                    type="stroke"
+                    status="vip"
+                    status-map='{"vip": {"text": "重点", "theme": "danger", "icon": "demo-bs-i"}}'
+                  ></status-tag>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="demo-code">
+            <pre><code>&lt;!-- =上方预览一致：custom-icon 为内部 &lt;i&gt; 的 class；宿主 class 供业务侧用 ::part 绑定 icon 字形 --&gt;
+&lt;status-tag class="demo-bs--check" status="running" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
+&lt;status-tag class="demo-bs--warn" status="warning" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
+&lt;status-tag class="demo-bs--check" status="unknown" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
+
+&lt;status-tag class="demo-bs--check" type="stroke" status="running" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
+&lt;status-tag class="demo-bs--warn" type="stroke" status="warning" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
+&lt;status-tag class="demo-bs--warn" type="stroke" status="danger" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
+
+&lt;status-tag class="demo-bs--check" type="filled" status="running" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
+&lt;status-tag class="demo-bs--warn" type="filled" status="warning" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
+&lt;status-tag class="demo-bs--check" type="filled" status="unknown" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
+
+&lt;status-tag
+  class="demo-bs--star"
+  status="vip"
+  status-map='{"vip": {"text": "重点", "theme": "danger", "icon": "demo-bs-i"}}'
+&gt;&lt;/status-tag&gt;
+&lt;status-tag
+  class="demo-bs--star"
+  type="stroke"
+  status="vip"
+  status-map='{"vip": {"text": "重点", "theme": "danger", "icon": "demo-bs-i"}}'
 &gt;&lt;/status-tag&gt;</code></pre>
           </div>
         </div>

@@ -36,6 +36,7 @@ const SVG_DATA_URI = 'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAyNCAx
  * @attr {string} status - 当前状态值（支持大小写不敏感匹配）
  * @attr {string} locale - 国际化语言代码（zh-CN | en-US）
  * @attr {string} status-map - 自定义状态映射的 JSON 字符串
+ * @attr {string} custom-icon - 自定义前置图标：传入 `i` 元素的 class（空格分隔多个 class），不使用内置圆点/加载图标
  *
  * @example
  * ```html
@@ -50,6 +51,9 @@ const SVG_DATA_URI = 'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAyNCAx
  *   status="pending"
  *   status-map='{"pending": {"text": "待处理", "theme": "warning"}}'
  * ></status-tag>
+ *
+ * <!-- 自定义图标 class（如 iconfont / Bootstrap Icons 等，Shadow 内需 ::part 映射） -->
+ * <status-tag status="running" custom-icon="bi bi-check-circle"></status-tag>
  * ```
  */
 @customElement('status-tag')
@@ -118,6 +122,15 @@ export class StatusTag extends LitElement {
    */
   @property({ type: String, reflect: true })
   locale: string = 'zh-CN';
+
+  /**
+   * 自定义前置图标的 class（可含多个 class，空格分隔）
+   * 有非空值时渲染 `<i part="custom-icon" class="..."></i>`，不使用内置加载动画或主题圆点
+   * 优先级高于当前状态在 `status-map` 中的 `icon` 字段
+   * Shadow DOM 下全局图标 class 可能无法命中内部节点，可用 `status-tag::part(custom-icon)` 写样式
+   */
+  @property({ type: String, reflect: true, attribute: 'custom-icon' })
+  customIcon: string = '';
 
   /**
    * 是否显示边框
@@ -407,13 +420,22 @@ export class StatusTag extends LitElement {
 
   /**
    * 渲染状态图标
-   * 根据主题类型渲染不同的图标（加载图标或圆点）
+   * `customIconClass` 非空时使用用户 class 渲染 `<i>`，否则按主题渲染加载图标或圆点
    *
    * @param theme - 当前主题类型
+   * @param customIconClass - 自定义 `i` 元素的 class 字符串
    * @returns 图标的模板结果
    * @private
    */
-  private _renderIcon(theme: StatusTheme) {
+  private _renderIcon(theme: StatusTheme, customIconClass: string) {
+    const trimmed = customIconClass.trim();
+    if (trimmed) {
+      return html`
+        <span class="bkbase-status-tag-custom-icon-root">
+          <i part="custom-icon" class=${trimmed}></i>
+        </span>
+      `;
+    }
     return theme === 'loading'
       ? html`<span class="bkbase-status-tag-loading"></span>`
       : html`<span class="bkbase-status-tag-dot"></span>`;
@@ -429,7 +451,8 @@ export class StatusTag extends LitElement {
    */
   render() {
     const currentStatus = this._getCurrentStatus();
-    const { theme, text } = currentStatus;
+    const { theme, text, icon } = currentStatus;
+    const customIconClass = this.customIcon?.trim() || icon?.trim() || '';
 
     const classes = {
       'bkbase-status-tag': true,
@@ -441,7 +464,7 @@ export class StatusTag extends LitElement {
 
     return html`
       <div class=${classMap(classes)}>
-        ${cache(this._renderIcon(theme))}
+        ${cache(this._renderIcon(theme, customIconClass))}
         <span>${text}</span>
       </div>
     `;
