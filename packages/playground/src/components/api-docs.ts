@@ -136,8 +136,21 @@ export class ApiDocs extends LitElement {
                 <td><span class="default">''</span></td>
               </tr>
               <tr>
+                <td><code>tipRender</code></td>
+                <td>
+                  <div class="desc">
+                    Tooltip 内容渲染函数，优先级高于 <code>tip</code>。
+                    函数返回 <code>HTMLElement</code>（推荐，无 XSS 风险）或 HTML 字符串（需同时在 <code>tippyOptions</code> 中设置 <code>allowHTML: true</code>）。
+                    <strong>仅支持 JS 赋值</strong>，不可通过 HTML 属性传入，适合在 Vue/React 中通过 ref 在 mounted/useEffect 中设置。
+                    tippy.js 不可用时自动降级：HTMLElement 取 <code>textContent</code>，字符串直接作为原生 <code>title</code>。
+                  </div>
+                </td>
+                <td><code class="type-code">(() => string | HTMLElement) | null</code></td>
+                <td><span class="default">null</span></td>
+              </tr>
+              <tr>
                 <td><code>tippy-options</code></td>
-                <td><div class="desc">tippy.js 配置选项的 JSON 字符串，透传给 tippy 实例。</div></td>
+                <td><div class="desc">tippy.js 配置选项的 JSON 字符串，透传给 tippy 实例。当 <code>tipRender</code> 返回 HTML 字符串时需设置 <code>allowHTML: true</code>。</div></td>
                 <td><code class="type-code">string | object</code></td>
                 <td><span class="default">{}</span></td>
               </tr>

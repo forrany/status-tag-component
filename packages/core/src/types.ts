@@ -154,6 +154,13 @@ export interface StatusTagProps {
   border?: boolean;
   /** 提示文本，hover 时以 tooltip 形式展示 */
   tip?: string;
+  /**
+   * 提示内容渲染函数
+   * 返回 HTMLElement 或字符串（可含 HTML），优先级高于 `tip`
+   * 仅支持 JS 赋值，不可通过 HTML 属性传入
+   * 若返回 HTML 字符串需同时在 tippyOptions 中设置 `allowHTML: true`
+   */
+  tipRender?: () => string | HTMLElement;
   /** tippy.js 配置选项的 JSON 字符串 */
   'tippy-options'?: string;
   /**
@@ -168,8 +175,10 @@ export interface StatusTagProps {
  */
 export interface TippyInstance {
   destroy(): void;
-  setContent(content: string): void;
+  setContent(content: string | HTMLElement): void;
   setProps(props: Record<string, unknown>): void;
+  /** tippy 生成的外层容器元素，内含 .tippy-content 等子节点 */
+  popper: Element;
 }
 
 /**

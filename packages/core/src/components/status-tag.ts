@@ -161,6 +161,28 @@ export class StatusTag extends LitElement {
   tip: string = '';
 
   /**
+   * 提示内容渲染函数
+   * 返回 HTMLElement 或字符串（可含 HTML），优先级高于 `tip`
+   * 仅支持 JS 赋值（attribute: false），不可通过 HTML 属性传入
+   *
+   * @example
+   * ```js
+   * el.tipRender = () => {
+   *   const div = document.createElement('div');
+   *   div.innerHTML = '<strong>状态说明</strong><br>详细描述';
+   *   return div;
+   * };
+   * ```
+   *
+   * @remarks
+   * - 返回 HTMLElement：tippy.js 直接挂载，无需额外配置
+   * - 返回 HTML 字符串：需在 tippyOptions 中设置 `allowHTML: true`
+   * - tippy.js 不可用时，降级为原生 title（取 textContent / 字符串本身）
+   */
+  @property({ attribute: false })
+  tipRender: (() => string | HTMLElement) | null = null;
+
+  /**
    * tippy.js 配置选项
    * 支持通过 JSON 字符串传入，会透传给 tippy.js 实例
    * @see https://atomiks.github.io/tippyjs/v6/all-props/
@@ -248,7 +270,11 @@ export class StatusTag extends LitElement {
    * 处理 tippy.js tooltip 的初始化和更新
    */
   updated(changedProperties: PropertyValues<this>): void {
-    if (changedProperties.has('tip') || changedProperties.has('tippyOptions')) {
+    if (
+      changedProperties.has('tip') ||
+      changedProperties.has('tipRender') ||
+      changedProperties.has('tippyOptions')
+    ) {
       this._setupTippy();
     }
   }
@@ -307,17 +333,41 @@ export class StatusTag extends LitElement {
 
   /**
    * 初始化或更新 tippy tooltip
-   * 无 tip 时清理实例；tippy.js 不可用时降级为原生 title
+   *
+   * 优先级：tipRender > tip
+   * - tipRender 存在时调用函数获取内容（支持 HTMLElement 或字符串）
+   * - tip 为字符串兜底
+   * - tippy.js 不可用时降级为原生 title（取 textContent 或字符串本身）
    */
   private async _setupTippy(): Promise<void> {
     this._destroyTippy();
 
-    if (!this.tip) {
+    const hasTip = !!this.tipRender || !!this.tip;
+    if (!hasTip) {
       this.removeAttribute('title');
       return;
     }
 
     const tippyFn = await this._resolveTippy();
+
+    if (this.tipRender) {
+      const rendered = this.tipRender();
+      if (!tippyFn) {
+        // 降级：取文本内容作为原生 title
+        this.title =
+          typeof rendered === 'string'
+            ? rendered
+            : (rendered.textContent ?? '');
+        return;
+      }
+      this.removeAttribute('title');
+      this._tippyInstance = tippyFn(this, {
+        content: rendered,
+        ...this._buildTippyOptions(),
+      });
+      return;
+    }
+
     if (!tippyFn) {
       this.title = this.tip;
       return;
@@ -326,8 +376,24 @@ export class StatusTag extends LitElement {
     this.removeAttribute('title');
     this._tippyInstance = tippyFn(this, {
       content: this.tip,
-      ...this.tippyOptions,
+      ...this._buildTippyOptions(),
     });
+  }
+
+  /**
+   * 构造传给 tippy 的选项，将设计规范默认值（12px 字体）与用户 tippyOptions 合并
+   * 用户若自定义 onMount，两个回调都会执行（设计默认值先执行）
+   */
+  private _buildTippyOptions(): Record<string, unknown> {
+    const userOnMount = this.tippyOptions.onMount as ((instance: TippyInstance) => void) | undefined;
+    return {
+      ...this.tippyOptions,
+      onMount: (instance: TippyInstance) => {
+        const content = instance.popper.querySelector('.tippy-content') as HTMLElement | null;
+        if (content) content.style.fontSize = '12px';
+        userOnMount?.(instance);
+      },
+    };
   }
 
   /**
@@ -458,7 +524,7 @@ export class StatusTag extends LitElement {
       'bkbase-status-tag': true,
       [`bkbase-status-tag--${theme}`]: true,
       [`bkbase-status-tag--type-${this.type}`]: !!this.type,
-      'bkbase-status-tag--has-tip': !!this.tip,
+      'bkbase-status-tag--has-tip': !!this.tip || !!this.tipRender,
       'bkbase-status-tag--no-border': !this.border,
     };
 

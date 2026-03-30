@@ -3,7 +3,7 @@
  * 展示 4 主题 × 3 类型 × border 的完整组合
  */
 
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, type PropertyValues } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import '@blueking/status-tag';
 import { sharedDemoCustomIconPartStyles } from './shared-demo-custom-icon-part-styles';
@@ -140,6 +140,68 @@ export class DemoSection extends LitElement {
   `,
     sharedDemoCustomIconPartStyles,
   ];
+
+  /** 在首次渲染后为 tipRender 演示元素注入渲染函数（JS-only 属性，无法通过 HTML 属性传入） */
+  firstUpdated(_changedProperties: PropertyValues): void {
+    super.firstUpdated(_changedProperties);
+    this._initTipRenderDemos();
+  }
+
+  private _initTipRenderDemos(): void {
+    type TagEl = HTMLElement & { tipRender?: (() => string | HTMLElement) | null; tippyOptions?: Record<string, unknown> };
+
+    const set = (id: string, fn: () => string | HTMLElement, opts?: Record<string, unknown>) => {
+      const el = this.renderRoot.querySelector<TagEl>(`#${id}`);
+      if (!el) return;
+      if (opts) el.tippyOptions = opts;
+      el.tipRender = fn;
+    };
+
+    // 返回 HTMLElement — 详细服务状态卡片
+    set('tip-render-running', () => {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'padding: 2px 0; min-width: 180px;';
+      wrap.innerHTML = `
+        <div style="font-weight:600;margin-bottom:8px;">服务运行状态</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+          <span style="color:#85d996;font-size:10px;">●</span>
+          <span>CPU：<strong>23%</strong></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+          <span style="color:#85d996;font-size:10px;">●</span>
+          <span>内存：<strong>512 MB / 2 GB</strong></span>
+        </div>
+        <div style="color:#979ba5;font-size:12px;margin-top:6px;border-top:1px solid rgba(255,255,255,0.15);padding-top:6px;">
+          已持续运行 72 小时
+        </div>`;
+      return wrap;
+    });
+
+    // 返回 HTMLElement — 警告详情
+    set('tip-render-warning', () => {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'padding: 2px 0; min-width: 160px;';
+      wrap.innerHTML = `
+        <div style="font-weight:600;color:#f59500;margin-bottom:6px;">⚠ CPU 告警</div>
+        <div>使用率已达 <strong>87%</strong>，超出阈值</div>
+        <div style="color:#979ba5;font-size:12px;margin-top:6px;">
+          建议扩容 / 排查异常进程
+        </div>`;
+      return wrap;
+    });
+
+    // 返回 HTML 字符串（需要 allowHTML: true）
+    set(
+      'tip-render-html-string',
+      () =>
+        `<div style="padding:2px 0;min-width:160px;">
+          <div style="font-weight:600;margin-bottom:6px;">未知状态</div>
+          <div>最后上报时间：<code style="background:rgba(255,255,255,0.15);padding:1px 4px;border-radius:3px;">2026-03-23 14:32</code></div>
+          <div style="color:#979ba5;font-size:12px;margin-top:6px;">请联系运维确认</div>
+        </div>`,
+      { allowHTML: true },
+    );
+  }
 
   render() {
     return html`
@@ -480,16 +542,52 @@ export class DemoSection extends LitElement {
       <!-- Tooltip 提示 -->
       <section class="section">
         <h2>💬 Tooltip 提示</h2>
+
+        <!-- 字符串 tip -->
         <div class="demo-card">
-          <h3>hover 查看效果</h3>
+          <h3>字符串 <code>tip</code>（可通过 HTML 属性直接传入）</h3>
           <div class="demo-preview">
             <status-tag status="running" tip="服务运行正常，已持续运行 72 小时"></status-tag>
             <status-tag status="warning" tip="CPU 使用率超过 80%，请关注"></status-tag>
             <status-tag status="unknown" tip="服务已于 2026-03-23 停止"></status-tag>
           </div>
           <div class="demo-code">
-            <pre><code>&lt;status-tag status="running" tip="服务运行正常"&gt;&lt;/status-tag&gt;
-&lt;status-tag status="warning" tip="CPU 使用率超过 80%"&gt;&lt;/status-tag&gt;</code></pre>
+            <pre><code>&lt;status-tag status="running" tip="服务运行正常，已持续运行 72 小时"&gt;&lt;/status-tag&gt;
+&lt;status-tag status="warning" tip="CPU 使用率超过 80%，请关注"&gt;&lt;/status-tag&gt;
+&lt;status-tag status="unknown" tip="服务已于 2026-03-23 停止"&gt;&lt;/status-tag&gt;</code></pre>
+          </div>
+        </div>
+
+        <!-- tipRender：渲染函数（仅 JS 赋值） -->
+        <div class="demo-card">
+          <h3><code>tipRender</code> — 渲染函数（支持富文本 / DOM）</h3>
+          <p class="demo-hint">
+            当 tooltip 内容比较复杂时，可通过 <code>tipRender</code> 属性传入一个函数，
+            函数返回 <code>HTMLElement</code> 或 HTML 字符串（字符串需在 <code>tippyOptions</code> 中开启 <code>allowHTML: true</code>）。
+            <strong>tipRender 优先级高于 tip。</strong>
+            该属性为纯 JS 属性，不支持 HTML 属性传入，适合在 Vue / React 中通过 ref 赋值，或原生 JS 直接操作。
+          </p>
+          <div class="demo-preview">
+            <status-tag id="tip-render-running" status="running"></status-tag>
+            <status-tag id="tip-render-warning" status="warning"></status-tag>
+            <status-tag id="tip-render-html-string" status="unknown"></status-tag>
+          </div>
+          <div class="demo-code">
+            <pre><code>// ① 返回 HTMLElement（推荐，无 XSS 风险）
+const el = document.querySelector('status-tag');
+el.tipRender = () => {
+  const div = document.createElement('div');
+  div.innerHTML = \`
+    &lt;div style="font-weight:600;margin-bottom:8px;"&gt;服务运行状态&lt;/div&gt;
+    &lt;div&gt;CPU：&lt;strong&gt;23%&lt;/strong&gt;&lt;/div&gt;
+    &lt;div&gt;内存：&lt;strong&gt;512 MB / 2 GB&lt;/strong&gt;&lt;/div&gt;
+  \`;
+  return div;
+};
+
+// ② 返回 HTML 字符串（需配合 allowHTML: true）
+el.tippyOptions = { allowHTML: true };
+el.tipRender = () => \`&lt;strong&gt;富文本内容&lt;/strong&gt;&lt;br&gt;详细描述\`;</code></pre>
           </div>
         </div>
       </section>
