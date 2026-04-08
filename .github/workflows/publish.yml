@@ -34,7 +34,8 @@ jobs:
 
       - name: Bump patch version
         working-directory: packages/core
-        run: npm version patch -m 'chore(release): %s'
+        run: |
+          npm version patch -m "chore(release): %s"
 
       - name: Publish to npm
         working-directory: packages/core
