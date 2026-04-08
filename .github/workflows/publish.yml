@@ -26,11 +26,12 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org/
 
-      - name: Configure npm registry auth
+      - name: Configure npm auth
         run: |
-          cat > ~/.npmrc << EOF
-          //registry.npmjs.org/:_authToken=\${NPM_TOKEN}
-          EOF
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Verify npm auth
+        run: npm whoami --registry https://registry.npmjs.org/
 
       - name: Install dependencies
         run: pnpm install
@@ -43,21 +44,9 @@ jobs:
         run: |
           npm version patch -m "chore(release): %s"
 
-      - name: Debug npm auth
-        run: |
-          echo "NPM_TOKEN set: ${{ secrets.NPM_TOKEN != '' }}"
-          echo "Token prefix: ${NPM_TOKEN:0:4}...${NPM_TOKEN: -4}"
-          npm whoami --registry https://registry.npmjs.org/ 2>&1 || true
-          echo "--- .npmrc ---"
-          cat ~/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Publish to npm
         working-directory: packages/core
         run: pnpm publish --no-git-checks
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push version change & tag
         run: |
