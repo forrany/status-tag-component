@@ -26,6 +26,12 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org/
 
+      - name: Configure npm registry auth
+        run: |
+          cat > ~/.npmrc << EOF
+          //registry.npmjs.org/:_authToken=\${NPM_TOKEN}
+          EOF
+
       - name: Install dependencies
         run: pnpm install
 
@@ -41,7 +47,7 @@ jobs:
         working-directory: packages/core
         run: pnpm publish --no-git-checks
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push version change & tag
         run: |
