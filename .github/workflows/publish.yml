@@ -28,7 +28,7 @@ jobs:
 
       - name: Configure npm auth
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$NPM_CONFIG_USERCONFIG"
 
       - name: Verify npm auth
         run: npm whoami --registry https://registry.npmjs.org/
