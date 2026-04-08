@@ -24,7 +24,6 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          registry-url: https://registry.npmjs.org/
 
       - name: Verify npm version
         run: npm --version
@@ -43,8 +42,6 @@ jobs:
       - name: Publish to npm
         working-directory: packages/core
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push version change & tag
         run: |
