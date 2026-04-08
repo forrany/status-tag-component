@@ -25,25 +25,25 @@ $loading-duration: 1s;
 // 五色主题配置
 $themes: (
   'loading': (
-    bg: #EDF4FF,
-    border: #CDDFFE,
-    color: #699DF4,
-    dot-bg: #CDDFFE,
-    dot-border: #699DF4,
+    bg: #E6EDFF,
+    border: #E6EDFF,
+    color: #3974FF,
+    dot-bg: #E6EDFF,
+    dot-border: #3974FF,
   ),
   'running': (
-    bg: #EBFAEF,
+    bg: #E1F5F0,
     border: #CBF0DA,
-    color: #299E56,
-    dot-bg: #E5F6EA,
-    dot-border: #3FC06D,
+    color: #21A380,
+    dot-bg: #CBF0DA,
+    dot-border: #21A380,
   ),
   'unknown': (
-    bg: #F5F7FA,
-    border: #EAEBF0,
-    color: #979BA5,
-    dot-bg: #F0F1F5,
-    dot-border: #C4C6CC,
+    bg: #F0F4FA,
+    border: #E4E9F2,
+    color: #8F9FBD,
+    dot-bg: #E4E9F2,
+    dot-border: #8F9FBD,
   ),
   'warning': (
     bg: #FDF4E9,
@@ -53,30 +53,30 @@ $themes: (
     dot-border: #F59500,
   ),
   'danger': (
-    bg: #FEEBEA,
-    border: #FDD8D6,
-    color: #EA3636,
-    dot-bg: #FDD8D6,
-    dot-border: #EA3636,
+    bg: #FFEBEB,
+    border: #FFDBDB,
+    color: #E54040,
+    dot-bg: #FFDBDB,
+    dot-border: #E54040,
   ),
 );
 
 // stroke 类型专属色值（8px 描边圆点）
 $stroke-themes: (
-  'loading': ( bg: #CDDFFE, border: #699DF4 ),
-  'running': ( bg: #CBF0DA, border: #2CAF5E ),
-  'unknown': ( bg: #F0F1F5, border: #C4C6CC ),
+  'loading': ( bg: #E6EDFF, border: #3974FF ),
+  'running': ( bg: #CBF0DA, border: #21A380 ),
+  'unknown': ( bg: #E4E9F2, border: #8F9FBD ),
   'warning': ( bg: #FCE5C0, border: #F59500 ),
-  'danger': ( bg: #FDD8D6, border: #EA3636 ),
+  'danger': ( bg: #FFDBDB, border: #E54040 ),
 );
 
 // filled 类型专属色值（13px 光晕 + 7px 实心）
 $filled-themes: (
-  'loading': ( halo: #CDDFFE, dot: #699DF4 ),
-  'running': ( halo: #DAF6E5, dot: #3FC06D ),
-  'unknown': ( halo: #979ba529, dot: #979BA5 ),
+  'loading': ( halo: #E6EDFF, dot: #3974FF ),
+  'running': ( halo: #CBF0DA, dot: #21A380 ),
+  'unknown': ( halo: #8f9fbd29, dot: #8F9FBD ),
   'warning': ( halo: #FDEED8, dot: #F59500 ),
-  'danger': ( halo: #ea363629, dot: #EA3636 ),
+  'danger': ( halo: #e5404029, dot: #E54040 ),
 );
 
 // ========== 混合 / Mixins ==========
