@@ -5,11 +5,12 @@ import '@blueking/status-tag';
 import { sharedDemoCustomIconPartStyles } from './shared-demo-custom-icon-part-styles';
 
 type CustomIconPreset = '' | 'check' | 'warn' | 'star';
+type StatusTagType = '' | 'text' | 'stroke' | 'filled';
 
 @customElement('interactive-controller')
 export class InteractiveController extends LitElement {
   @state() private status = 'running';
-  @state() private type = '';
+  @state() private type: StatusTagType = '';
   @state() private locale = 'zh-CN';
   @state() private border = true;
   @state() private useCustomMap = false;
@@ -76,6 +77,12 @@ export class InteractiveController extends LitElement {
     select:focus, input:focus {
       outline: none;
       border-color: #3a84ff;
+    }
+
+    select:disabled {
+      background: #f5f7fa;
+      color: #c4c6cc;
+      cursor: not-allowed;
     }
 
     .toggle-row {
@@ -169,7 +176,7 @@ export class InteractiveController extends LitElement {
     if (this.type) attrs.push(`type="${this.type}"`);
     if (this.locale !== 'zh-CN') attrs.push(`locale="${this.locale}"`);
     if (!this.border) attrs.push(`border="false"`);
-    if (this.customIconPreset) {
+    if (this.type !== 'text' && this.customIconPreset) {
       attrs.push(`class="${this._customIconHostClass}"`);
       attrs.push(`custom-icon="demo-bs-i"`);
     }
@@ -195,7 +202,7 @@ export class InteractiveController extends LitElement {
               type=${this.type}
               locale=${this.locale}
               ?border=${this.border}
-              custom-icon=${this.customIconPreset ? 'demo-bs-i' : nothing}
+              custom-icon=${this.type !== 'text' && this.customIconPreset ? 'demo-bs-i' : nothing}
               .statusMap=${this._statusMap}
             ></status-tag>
           </div>
@@ -203,9 +210,12 @@ export class InteractiveController extends LitElement {
           <div class="controls">
             <label>
               Status
-              <select @change=${(e: Event) => { this.status = (e.target as HTMLSelectElement).value; }}>
+              <select
+                .value=${this.status}
+                @change=${(e: Event) => { this.status = (e.target as HTMLSelectElement).value; }}
+              >
                 <option value="loading">loading</option>
-                <option value="running" selected>running</option>
+                <option value="running">running</option>
                 <option value="unknown">unknown</option>
                 <option value="warning">warning</option>
                 <option value="danger">danger</option>
@@ -214,8 +224,19 @@ export class InteractiveController extends LitElement {
 
             <label>
               Type
-              <select @change=${(e: Event) => { this.type = (e.target as HTMLSelectElement).value; }}>
-                <option value="" selected>Default</option>
+              <select
+                .value=${this.type}
+                @change=${(e: Event) => {
+                  const v = (e.target as HTMLSelectElement).value;
+                  this.type =
+                    v === 'text' || v === 'stroke' || v === 'filled' ? v : '';
+                  if (this.type === 'text') {
+                    this.customIconPreset = '';
+                  }
+                }}
+              >
+                <option value="">Default</option>
+                <option value="text">Text（仅文字）</option>
                 <option value="stroke">Stroke</option>
                 <option value="filled">Filled</option>
               </select>
@@ -225,13 +246,16 @@ export class InteractiveController extends LitElement {
               custom-icon
               <select
                 .value=${this.customIconPreset}
+                ?disabled=${this.type === 'text'}
                 @change=${(e: Event) => {
                   const v = (e.target as HTMLSelectElement).value;
                   this.customIconPreset =
                     v === 'check' || v === 'warn' || v === 'star' ? v : '';
                 }}
               >
-                <option value="">无（内置圆点/加载）</option>
+                <option value="">
+                  ${this.type === 'text' ? 'text 类型不展示前置图标' : '无（内置圆点/加载）'}
+                </option>
                 <option value="check">演示：对勾（demo-bs--check）</option>
                 <option value="warn">演示：警告三角（demo-bs--warn）</option>
                 <option value="star">演示：星标（demo-bs--star）</option>
@@ -240,8 +264,11 @@ export class InteractiveController extends LitElement {
 
             <label>
               Locale
-              <select @change=${(e: Event) => { this.locale = (e.target as HTMLSelectElement).value; }}>
-                <option value="zh-CN" selected>zh-CN</option>
+              <select
+                .value=${this.locale}
+                @change=${(e: Event) => { this.locale = (e.target as HTMLSelectElement).value; }}
+              >
+                <option value="zh-CN">zh-CN</option>
                 <option value="en-US">en-US</option>
               </select>
             </label>

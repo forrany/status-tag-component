@@ -2,7 +2,7 @@
  * 状态标签组件样式
  *
  * 五种主色主题：loading（蓝）、running（绿）、unknown（灰）、warning（黄）、danger（红）
- * 三种展现类型：default（标签框）、stroke（描边圆点）、filled（光晕圆点）
+ * 四种展现类型：default（标签框+圆点）、text（标签框仅文字）、stroke（描边圆点）、filled（光晕圆点）
  * 可选 border 控制
  */
 
@@ -14,10 +14,10 @@ $tag-height: 22px;
 $tag-padding: 0 8px;
 $tag-border-radius: 13px;
 $tag-font-size: 12px;
-$tag-font-weight: 700;
+$tag-font-weight: 500;
 
 $icon-size: 12px;
-$dot-size: 6px;
+$dot-size: 8px;
 $icon-margin: 4px;
 
 $loading-duration: 1s;
@@ -137,7 +137,7 @@ $filled-themes: (
   margin-right: $icon-margin;
   flex-shrink: 0;
   line-height: 1;
-  font-size: $icon-size;
+  font-size: 12px;
 }
 
 .bkbase-status-tag-dot {

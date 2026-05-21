@@ -107,8 +107,8 @@ export class ApiDocs extends LitElement {
               </tr>
               <tr>
                 <td><code>type</code></td>
-                <td><div class="desc">展现形态。<code>''</code> 默认带背景框；<code>'stroke'</code> 描边圆点；<code>'filled'</code> 光晕实心圆点。</div></td>
-                <td><code class="type-code">'' | 'stroke' | 'filled'</code></td>
+                <td><div class="desc">展现形态。<code>''</code> 默认（背景框 + 状态图标）；<code>'text'</code> 同色背景框仅文字；<code>'stroke'</code> 描边圆点；<code>'filled'</code> 光晕实心圆点。</div></td>
+                <td><code class="type-code">'' | 'text' | 'stroke' | 'filled'</code></td>
                 <td><span class="default">''</span></td>
               </tr>
               <tr>

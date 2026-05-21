@@ -1,4 +1,4 @@
-import { LitElement, html, unsafeCSS, type PropertyValues } from 'lit';
+import { LitElement, html, nothing, unsafeCSS, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { cache } from 'lit/directives/cache.js';
 import { classMap } from 'lit/directives/class-map.js';
@@ -82,10 +82,11 @@ export class StatusTag extends LitElement {
    * 标签类型
    * stroke: 描边圆点（8px）
    * filled: 含光晕的实心圆点（外层 13px 光晕 + 内层 7px 实心）
-   * @default '' (默认样式)
+   * text: 与 default 相同的标签框样式，仅展示文字，不渲染前置状态图标
+   * @default '' (默认样式，带圆点/加载图标)
    */
   @property({ type: String, reflect: true })
-  type: 'stroke' | 'filled' | '' = '';
+  type: 'stroke' | 'filled' | 'text' | '' = '';
 
   /**
    * 自定义状态映射配置
@@ -520,17 +521,19 @@ export class StatusTag extends LitElement {
     const { theme, text, icon } = currentStatus;
     const customIconClass = this.customIcon?.trim() || icon?.trim() || '';
 
+    const showStatusIcon = this.type !== 'text';
+
     const classes = {
       'bkbase-status-tag': true,
       [`bkbase-status-tag--${theme}`]: true,
-      [`bkbase-status-tag--type-${this.type}`]: !!this.type,
+      [`bkbase-status-tag--type-${this.type}`]: !!this.type && this.type !== 'text',
       'bkbase-status-tag--has-tip': !!this.tip || !!this.tipRender,
       'bkbase-status-tag--no-border': !this.border,
     };
 
     return html`
       <div class=${classMap(classes)}>
-        ${cache(this._renderIcon(theme, customIconClass))}
+        ${showStatusIcon ? cache(this._renderIcon(theme, customIconClass)) : nothing}
         <span>${text}</span>
       </div>
     `;

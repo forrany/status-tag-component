@@ -149,7 +149,7 @@ export interface StatusTagProps {
   /** 自定义状态映射的 JSON 字符串 */
   'status-map'?: string;
   /** 标签类型 */
-  type?: 'stroke' | 'filled' | '';
+  type?: 'stroke' | 'filled' | 'text' | '';
   /** 是否显示边框，默认 true */
   border?: boolean;
   /** 提示文本，hover 时以 tooltip 形式展示 */

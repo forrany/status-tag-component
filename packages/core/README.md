@@ -38,6 +38,9 @@ npm install @blueking/status-tag
 
 <!-- 光晕样式 -->
 <status-tag status="running" type="filled"></status-tag>
+
+<!-- 纯文字（与 default 同色标签框，无前置圆点/加载图标） -->
+<status-tag status="running" type="text"></status-tag>
 ```
 
 ## 📚 API 文档
@@ -47,7 +50,7 @@ npm install @blueking/status-tag
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |--------|------|------|--------|------|
 | `status` | string | ✅ | - | 状态值（如：'running', 'stop', 'warning', 'failed' 等） |
-| `type` | string | ❌ | '' | 样式类型，支持 `'stroke'` (描边) 或 `'filled'` (光晕) |
+| `type` | string | ❌ | '' | 样式类型：`''`（默认，带状态图标）、`'text'`（同色标签框仅文字）、`'stroke'`（描边圆点）、`'filled'`（光晕圆点） |
 | `locale` | string | ❌ | 'zh-CN' | 语言设置，支持 'zh-CN' 和 'en-US' |
 | `status-map` | string (JSON) | ❌ | - | 自定义状态映射配置（JSON 字符串） |
 

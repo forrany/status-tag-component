@@ -97,6 +97,10 @@ export class FrameworkExamples extends LitElement {
     <span class="token attr-name">type</span><span class="token attr-value">="filled"</span>
     <span class="token attr-name">locale</span><span class="token attr-value">="zh-CN"</span>
   <span class="token tag">&gt;&lt;/status-tag&gt;</span>
+  <span class="token tag">&lt;status-tag</span>
+    <span class="token attr-name">status</span><span class="token attr-value">="warning"</span>
+    <span class="token attr-name">type</span><span class="token attr-value">="text"</span>
+  <span class="token tag">&gt;&lt;/status-tag&gt;</span>
 <span class="token tag">&lt;/template&gt;</span>
 </pre>`;
   }
@@ -156,6 +160,9 @@ export class FrameworkExamples extends LitElement {
     return html`
       <section class="section">
         <h2>🔧 框架集成</h2>
+        <p style="margin: 0 0 16px; color: #63656e; font-size: 14px;">
+          <code>type</code> 支持 <code>''</code>（默认）、<code>text</code>（同色标签仅文字）、<code>stroke</code>、<code>filled</code>。
+        </p>
         <div class="framework-card">
           <div class="tabs">
             <div 

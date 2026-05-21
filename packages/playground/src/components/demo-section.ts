@@ -231,7 +231,7 @@ export class DemoSection extends LitElement {
       <section class="section">
         <h2>🎭 样式类型</h2>
         <div class="demo-card">
-          <h3>三种展现形态 × 五种主色</h3>
+          <h3>四种展现形态 × 五种主色</h3>
           <div class="demo-preview">
             <div class="demo-grid">
               <div class="demo-row">
@@ -242,6 +242,16 @@ export class DemoSection extends LitElement {
                   <status-tag status="unknown"></status-tag>
                   <status-tag status="warning"></status-tag>
                   <status-tag status="danger"></status-tag>
+                </div>
+              </div>
+              <div class="demo-row">
+                <span class="demo-row-label">Text</span>
+                <div class="demo-row-tags">
+                  <status-tag status="loading" type="text"></status-tag>
+                  <status-tag status="running" type="text"></status-tag>
+                  <status-tag status="unknown" type="text"></status-tag>
+                  <status-tag status="warning" type="text"></status-tag>
+                  <status-tag status="danger" type="text"></status-tag>
                 </div>
               </div>
               <div class="demo-row">
@@ -267,8 +277,11 @@ export class DemoSection extends LitElement {
             </div>
           </div>
           <div class="demo-code">
-            <pre><code>&lt;!-- Default (带背景框) --&gt;
+            <pre><code>&lt;!-- Default (带背景框 + 状态图标) --&gt;
 &lt;status-tag status="running"&gt;&lt;/status-tag&gt;
+
+&lt;!-- Text (同色标签框，仅文字) --&gt;
+&lt;status-tag status="running" type="text"&gt;&lt;/status-tag&gt;
 
 &lt;!-- Stroke (描边圆点) --&gt;
 &lt;status-tag status="running" type="stroke"&gt;&lt;/status-tag&gt;
@@ -421,7 +434,8 @@ export class DemoSection extends LitElement {
             <code>demo-bs--check</code> / <code>demo-bs--warn</code> / <code>demo-bs--star</code>）。
             业务侧用自有 icon class / 字体时，在页面样式里写
             <code>status-tag.你的场景::part(custom-icon) { … }</code> 即可（勿写 <code>::part(x).内部class</code>）。
-            <code>type</code> 可与 <code>custom-icon</code> 组合；<code>status-map.icon</code> 与根节点
+            <code>type="text"</code> 与 default 同色标签框，但不渲染前置图标（忽略 <code>custom-icon</code> / <code>status-map.icon</code>）。
+            其余 <code>type</code> 可与 <code>custom-icon</code> 组合；<code>status-map.icon</code> 与根节点
             <code>custom-icon</code> 优先级不变。
           </p>
           <div class="demo-preview">
@@ -444,6 +458,14 @@ export class DemoSection extends LitElement {
                     status="unknown"
                     custom-icon="demo-bs-i"
                   ></status-tag>
+                </div>
+              </div>
+              <div class="demo-row">
+                <span class="demo-row-label">Text</span>
+                <div class="demo-row-tags">
+                  <status-tag status="running" type="text"></status-tag>
+                  <status-tag status="warning" type="text"></status-tag>
+                  <status-tag status="danger" type="text"></status-tag>
                 </div>
               </div>
               <div class="demo-row">
@@ -515,6 +537,9 @@ export class DemoSection extends LitElement {
 &lt;status-tag class="demo-bs--check" status="running" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
 &lt;status-tag class="demo-bs--warn" status="warning" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
 &lt;status-tag class="demo-bs--check" status="unknown" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
+
+&lt;status-tag status="running" type="text"&gt;&lt;/status-tag&gt;
+&lt;status-tag status="warning" type="text"&gt;&lt;/status-tag&gt;
 
 &lt;status-tag class="demo-bs--check" type="stroke" status="running" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
 &lt;status-tag class="demo-bs--warn" type="stroke" status="warning" custom-icon="demo-bs-i"&gt;&lt;/status-tag&gt;
