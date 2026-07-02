@@ -233,7 +233,7 @@ export class InteractiveController extends LitElement {
                     v === 'warning' || v === 'danger' ? v : '';
                 }}
               >
-                <option value="">自动（按 status 推导）</option>
+                <option value="">默认（按 status-map 匹配）</option>
                 <option value="loading">loading（蓝）</option>
                 <option value="running">running（绿）</option>
                 <option value="unknown">unknown（灰/橙）</option>
