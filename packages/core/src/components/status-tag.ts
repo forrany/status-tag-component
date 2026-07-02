@@ -79,6 +79,18 @@ export class StatusTag extends LitElement {
   status: string = 'unknown';
 
   /**
+   * 主题覆盖
+   * 直接指定标签的视觉主题（颜色/图标），与 `status` 文字解耦
+   * 适用于「后端返回什么就显示什么、但颜色由前端决定」的场景：
+   * `status` 提供任意展示文本，`theme` 提供语义颜色
+   * 优先级最高：设置后会覆盖 status-map 匹配得到的主题
+   * 留空时按原有逻辑从 status-map 推导主题
+   * @default '' (不覆盖)
+   */
+  @property({ type: String, reflect: true })
+  theme: StatusTheme | '' = '';
+
+  /**
    * 标签类型
    * stroke: 描边圆点（8px）
    * filled: 含光晕的实心圆点（外层 13px 光晕 + 内层 7px 实心）
@@ -431,13 +443,13 @@ export class StatusTag extends LitElement {
    * 1. 精确匹配
    * 2. 小写匹配
    * 3. 大写匹配
-   * 4. 回退到 'unknown'
+   * 4. 未命中返回 null（由调用方决定回退策略）
    *
    * @param status - 要匹配的状态值
-   * @returns 匹配到的状态键
+   * @returns 匹配到的状态键，未命中时返回 null
    * @private
    */
-  private _findMatchingStatusKey(status: string): string {
+  private _findMatchingStatusKey(status: string): string | null {
     const map = this._mergedStatusMap;
 
     // 1. 精确匹配
@@ -457,8 +469,8 @@ export class StatusTag extends LitElement {
       return upperStatus;
     }
 
-    // 4. 默认回退
-    return 'unknown';
+    // 4. 未命中
+    return null;
   }
 
   /**
@@ -470,7 +482,18 @@ export class StatusTag extends LitElement {
    */
   private _getCurrentStatus(): StatusConfig {
     const matchedKey = this._findMatchingStatusKey(this.status);
-    const statusConfig = this._mergedStatusMap[matchedKey] || this._mergedStatusMap['unknown'];
+
+    // 未命中任何映射：直接展示后端返回的原始状态文本
+    // 主题优先取 theme 覆盖值，否则用 unknown 主题作为视觉兜底
+    if (matchedKey === null) {
+      const fallbackTheme = this._mergedStatusMap['unknown']?.theme ?? 'unknown';
+      return {
+        text: this.status,
+        theme: this.theme || fallbackTheme,
+      };
+    }
+
+    const statusConfig = this._mergedStatusMap[matchedKey];
 
     // 尝试翻译：构建 status.xxx 的键
     const translationKey = `status.${statusConfig.text}`;
@@ -481,7 +504,9 @@ export class StatusTag extends LitElement {
 
     return {
       ...statusConfig,
-      text
+      text,
+      // theme 覆盖优先级最高
+      theme: this.theme || statusConfig.theme,
     };
   }
 

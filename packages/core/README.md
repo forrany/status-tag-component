@@ -43,13 +43,31 @@ npm install @blueking/status-tag
 <status-tag status="running" type="text"></status-tag>
 ```
 
+### 后端返回什么就显示什么
+
+未在 `status-map` 中匹配到的状态，会**原样展示传入文本**，无需为每个业务状态都预先配置：
+
+```html
+<!-- 未命中映射：直接显示 "部署中"，套用 unknown 主题兜底 -->
+<status-tag status="部署中"></status-tag>
+```
+
+若还想让颜色也表达语义，用 `theme` 属性把**颜色**与**文本**解耦（`theme` 优先级最高）：
+
+```html
+<status-tag status="部署中"   theme="loading"></status-tag>  <!-- 蓝色 + 旋转图标 -->
+<status-tag status="审批通过" theme="running"></status-tag>  <!-- 绿色 -->
+<status-tag status="连接失败" theme="danger"></status-tag>   <!-- 红色 -->
+```
+
 ## 📚 API 文档
 
 ### 属性 (Attributes)
 
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |--------|------|------|--------|------|
-| `status` | string | ✅ | - | 状态值（如：'running', 'stop', 'warning', 'failed' 等） |
+| `status` | string | ✅ | - | 状态值（如：'running', 'stop', 'warning', 'failed' 等）。未匹配到映射时**原样展示传入文本**（后端返回什么就显示什么），并套用 unknown 主题作为兜底 |
+| `theme` | string | ❌ | '' | 主题覆盖，与 `status` 文本解耦。可选 `'loading' \| 'running' \| 'unknown' \| 'warning' \| 'danger'`。优先级最高，设置后覆盖 status-map 推导的主题；适用于「文本任意、颜色由前端决定」的场景 |
 | `type` | string | ❌ | '' | 样式类型：`''`（默认，带状态图标）、`'text'`（同色标签框仅文字）、`'stroke'`（描边圆点）、`'filled'`（光晕圆点） |
 | `locale` | string | ❌ | 'zh-CN' | 语言设置，支持 'zh-CN' 和 'en-US' |
 | `status-map` | string (JSON) | ❌ | - | 自定义状态映射配置（JSON 字符串） |

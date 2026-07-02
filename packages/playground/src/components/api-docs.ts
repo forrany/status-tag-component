@@ -101,9 +101,15 @@ export class ApiDocs extends LitElement {
             <tbody>
               <tr>
                 <td><code>status</code></td>
-                <td><div class="desc">当前状态值。支持大小写不敏感匹配，未匹配时回退到 unknown。</div></td>
+                <td><div class="desc">当前状态值。支持大小写不敏感匹配；<strong>未匹配到映射时，原样展示传入的文本</strong>（后端返回什么就显示什么），并套用 unknown 主题作为视觉兜底。</div></td>
                 <td><code class="type-code">string</code></td>
                 <td><span class="default">'unknown'</span></td>
+              </tr>
+              <tr>
+                <td><code>theme</code></td>
+                <td><div class="desc">主题覆盖，与 <code>status</code> 文本解耦。适用于「后端返回任意文本、颜色由前端决定」的场景：<code>status</code> 提供展示文字，<code>theme</code> 提供语义颜色。<strong>优先级最高</strong>，设置后会覆盖 status-map 匹配得到的主题；留空则按 status-map 推导。</div></td>
+                <td><code class="type-code">'' | StatusTheme</code></td>
+                <td><span class="default">''</span></td>
               </tr>
               <tr>
                 <td><code>type</code></td>

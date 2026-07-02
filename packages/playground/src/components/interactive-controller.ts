@@ -6,10 +6,12 @@ import { sharedDemoCustomIconPartStyles } from './shared-demo-custom-icon-part-s
 
 type CustomIconPreset = '' | 'check' | 'warn' | 'star';
 type StatusTagType = '' | 'text' | 'stroke' | 'filled';
+type StatusThemeOverride = '' | 'loading' | 'running' | 'unknown' | 'warning' | 'danger';
 
 @customElement('interactive-controller')
 export class InteractiveController extends LitElement {
   @state() private status = 'running';
+  @state() private theme: StatusThemeOverride = '';
   @state() private type: StatusTagType = '';
   @state() private locale = 'zh-CN';
   @state() private border = true;
@@ -173,6 +175,7 @@ export class InteractiveController extends LitElement {
 
   private _renderCode(): string {
     const attrs = [`status="${this.status}"`];
+    if (this.theme) attrs.push(`theme="${this.theme}"`);
     if (this.type) attrs.push(`type="${this.type}"`);
     if (this.locale !== 'zh-CN') attrs.push(`locale="${this.locale}"`);
     if (!this.border) attrs.push(`border="false"`);
@@ -199,6 +202,7 @@ export class InteractiveController extends LitElement {
                 'demo-bs--star': this.customIconPreset === 'star',
               })}
               status=${this.status}
+              theme=${this.theme || nothing}
               type=${this.type}
               locale=${this.locale}
               ?border=${this.border}
@@ -209,16 +213,32 @@ export class InteractiveController extends LitElement {
 
           <div class="controls">
             <label>
-              Status
-              <select
+              Status（可输入任意文本）
+              <input
+                type="text"
+                placeholder="如 running / 部署中 / 任意后端值"
                 .value=${this.status}
-                @change=${(e: Event) => { this.status = (e.target as HTMLSelectElement).value; }}
+                @input=${(e: Event) => { this.status = (e.target as HTMLInputElement).value; }}
+              />
+            </label>
+
+            <label>
+              Theme（主题覆盖）
+              <select
+                .value=${this.theme}
+                @change=${(e: Event) => {
+                  const v = (e.target as HTMLSelectElement).value;
+                  this.theme =
+                    v === 'loading' || v === 'running' || v === 'unknown' ||
+                    v === 'warning' || v === 'danger' ? v : '';
+                }}
               >
-                <option value="loading">loading</option>
-                <option value="running">running</option>
-                <option value="unknown">unknown</option>
-                <option value="warning">warning</option>
-                <option value="danger">danger</option>
+                <option value="">自动（按 status 推导）</option>
+                <option value="loading">loading（蓝）</option>
+                <option value="running">running（绿）</option>
+                <option value="unknown">unknown（灰/橙）</option>
+                <option value="warning">warning（黄）</option>
+                <option value="danger">danger（红）</option>
               </select>
             </label>
 
