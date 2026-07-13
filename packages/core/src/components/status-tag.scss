@@ -147,6 +147,7 @@ $filled-themes: (
   border-radius: 50%;
   margin-right: $icon-margin;
   background-color: #c4c6cc;
+  box-sizing: border-box;
   position: relative;
 
   &::before {
@@ -215,7 +216,6 @@ $filled-themes: (
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    box-sizing: border-box;
     &::before { display: none; }
   }
 
@@ -234,7 +234,6 @@ $filled-themes: (
     width: 13px;
     height: 13px;
     border-radius: 50%;
-    box-sizing: border-box;
     position: relative;
 
     &::before { display: none; }
