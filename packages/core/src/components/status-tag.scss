@@ -10,7 +10,7 @@
 
 // ========== 设计令牌 / Design Tokens ==========
 
-$tag-height: 22px;
+$tag-height: 20px;
 $tag-padding: 0 8px;
 $tag-border-radius: 13px;
 $tag-font-size: 12px;
@@ -97,8 +97,8 @@ $filled-themes: (
 // ========== 宿主元素 ==========
 
 :host {
+  // 不设 vertical-align，避免影响表格/行内布局；需要时可业务侧覆盖
   display: inline-flex;
-  vertical-align: middle;
 }
 
 // ========== 标签容器 ==========
